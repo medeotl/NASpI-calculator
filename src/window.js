@@ -21,10 +21,9 @@ const { GObject, Gtk } = imports.gi;
 var NaspiCalculatorWindow = GObject.registerClass({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['label']
+    InternalChildren: ['next1', 'previous1']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
     _init(application) {
         super._init({ application });
     }
 });
-
