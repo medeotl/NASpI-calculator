@@ -1,0 +1,7 @@
+data/com.github.medeotl.NASpI-Calculator.desktop.in
+data/com.github.medeotl.NASpI-Calculator.appdata.xml.in
+data/com.github.medeotl.NASpI-Calculator.gschema.xml
+src/window.ui
+src/main.js
+src/window.js
+

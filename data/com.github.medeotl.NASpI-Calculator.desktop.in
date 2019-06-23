@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=naspi-calculator
+Exec=com.github.medeotl.NASpI-Calculator
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
