@@ -12,10 +12,9 @@
     <property name="can_focus">False</property>
     <property name="icon_name">go-previous-symbolic</property>
   </object>
-  <object class="GtkWindow">
+  <template class="NaspiCalculatorWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="border_width">18</property>
-    <signal name="destroy-event" handler="gtk_main_quit" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -379,5 +378,5 @@
         </child>
       </object>
     </child>
-  </object>
+  </template>
 </interface>
