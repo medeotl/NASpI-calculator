@@ -1,3 +1,6 @@
+pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
+gnome = import('gnome')
+
 desktop_file = i18n.merge_file(
   input: 'com.github.medeotl.NASpI-Calculator.desktop.in',
   output: 'com.github.medeotl.NASpI-Calculator.desktop',
@@ -13,6 +16,13 @@ if desktop_utils.found()
     args: [desktop_file]
   )
 endif
+
+data_res = gnome.compile_resources('com.github.medeotl.NASpI-Calculator.data',
+  'com.github.medeotl.NASpI-Calculator.data.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
+)
 
 appstream_file = i18n.merge_file(
   input: 'com.github.medeotl.NASpI-Calculator.appdata.xml.in',
