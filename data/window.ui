@@ -72,6 +72,7 @@
                       <object class="GtkEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="max_width_chars">10</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -110,6 +111,7 @@
                       <object class="GtkEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="max_width_chars">10</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -175,6 +177,7 @@
                       <object class="GtkEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="max_width_chars">10</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -232,6 +235,7 @@
                           <object class="GtkEntry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="max_width_chars">10</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
