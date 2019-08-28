@@ -26,4 +26,72 @@ var NaspiCalculatorWindow = GObject.registerClass({
     _init(application) {
         super._init({ application });
     }
-});
+    
+    _onEntryLostFocus (entry) {
+		/* Validate date inserted in entry
+		 * 
+		 * valide formats of the date:
+		 * 
+		 * DDMMYY
+		 * DDMMYYYY
+		 * D/M/YY
+		 * D/M/YYYY
+		 * D/MM/YY
+		 * D/MM/YYYY
+		 * DD/M/YY
+		 * DD/M/YYYY
+		 * DD/MM/YY
+		 * DD/MM/YYYY
+		 */
+		 
+		var entryText = entry.get_text();
+		var entryLength = entryText.length;
+		
+		if (entryLength == 0) {
+			print("Do nothing (empty entry)");
+			return;
+		}
+		
+		switch(entryText.split("/").length-1) { // # of occurrence of /
+				
+			case 0:
+				if ( (entryLength == 6 ) || (entryLength == 8) ) {
+					var DD = entryText.slice(0,2);
+					var MM = entryText.slice(2,4);
+					var YY = entryText.slice(4); 
+					break;
+				} else {
+					// TODO bordo entry in rosso
+					print("Bordo rosso !!!");
+					return;
+				}
+				
+			case 2:
+				if ( (entryLength > 5) && (entryLength < 11) ) {
+					var [DD, MM, YY] = entryText.split("/");
+					break;
+				} else {
+					// TODO bordo entry in rosso
+					print("Bordo rosso !!!");
+					return;
+				}
+				
+			default:
+				print ("default")
+				// TODO bordo entry in rosso
+				print("Bordo rosso !!!");
+				return;
+		}
+		// compose the date in english format
+		if (YY.length == 2) {
+			YY = "20" + YY;
+		}
+		var dateEng = MM + "/" + DD + "/" + YY;
+		print( "data inglese: " + dateEng);
+		print( new Date(dateEng).toLocaleDateString() );	
+	  
+	  }
+	
+	}
+	
+);
