@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/com/github/medeotl/NASpI-Calculator">
     <file>window.ui</file>
+    <file>application.css</file>
   </gresource>
 </gresources>

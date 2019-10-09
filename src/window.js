@@ -23,10 +23,23 @@ var NaspiCalculatorWindow = GObject.registerClass({
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
     InternalChildren: ['next1', 'previous1']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
+    
     _init(application) {
         super._init({ application });
     }
     
+    _setWrongDateStyle (entry) {
+		// style entry in red
+		let context = entry.get_style_context ();
+		context.add_class ("wrong-date");
+	}
+	
+	_removeWrondDateStyle (entry) {
+		// remove red style
+		let context = entry.get_style_context ();
+		context.remove_class ("wrong-date");
+	}
+	
     _onEntryLostFocus (entry) {
 		/* Validate date inserted in entry
 		 * 
@@ -62,6 +75,7 @@ var NaspiCalculatorWindow = GObject.registerClass({
 					break;
 				} else {
 					// TODO bordo entry in rosso
+					this._setWrongDateStyle (entry);
 					print("Bordo rosso !!!");
 					return;
 				}
@@ -72,6 +86,7 @@ var NaspiCalculatorWindow = GObject.registerClass({
 					break;
 				} else {
 					// TODO bordo entry in rosso
+					this._setWrongDateStyle(entry);
 					print("Bordo rosso !!!");
 					return;
 				}
@@ -79,17 +94,19 @@ var NaspiCalculatorWindow = GObject.registerClass({
 			default:
 				print ("default")
 				// TODO bordo entry in rosso
+				this._setWrongDateStyle(entry);
 				print("Bordo rosso !!!");
 				return;
 		}
-		// compose the date in english format
+		// date is ok, let's compose it in english format
 		if (YY.length == 2) {
 			YY = "20" + YY;
 		}
 		var dateEng = MM + "/" + DD + "/" + YY;
 		print( "data inglese: " + dateEng);
 		print( new Date(dateEng).toLocaleDateString() );	
-	  
+	    // remove wrong date style (if any)
+	    this._removeWrondDateStyle (entry);
 	  }
 	
 	}

@@ -23,7 +23,7 @@ pkg.require({
   'Gtk': '3.0'
 });
 
-const { Gio, Gtk } = imports.gi;
+const { Gio, Gtk, Gdk } = imports.gi;
 
 const { NaspiCalculatorWindow } = imports.window;
 
@@ -32,6 +32,18 @@ function main(argv) {
         application_id: 'com.github.medeotl.NASpI-Calculator',
         flags: Gio.ApplicationFlags.FLAGS_NONE,
     });
+
+	application.connect('startup', app => {
+		let style_provider = new Gtk.CssProvider();
+		style_provider.load_from_resource(
+			"/com/github/medeotl/NASpI-Calculator/application.css"
+		);
+		Gtk.StyleContext.add_provider_for_screen(
+			Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION 
+        );		
+	});
 
     application.connect('activate', app => {
         let activeWindow = app.activeWindow;
