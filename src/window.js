@@ -109,6 +109,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 		} else {
 			// remove wrong date style (if any)
 			this._removeWrondDateStyle (entry);
+			// write it in entry
+			entry.set_text (DD + "/" + MM + "/" + YY);
 		}	
 	    
 	  }
