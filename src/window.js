@@ -98,15 +98,19 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 				print ("Bordo rosso !!!");
 				return;
 		}
-		// date is ok, let's compose it in english format
+		// let's compose date in english format
 		if (YY.length == 2) {
 			YY = "20" + YY;
 		}
 		var dateEng = MM + "/" + DD + "/" + YY;
 		print ( "data inglese: " + dateEng);
-		print ( new Date (dateEng).toLocaleDateString () );	
-	    // remove wrong date style (if any)
-	    this._removeWrondDateStyle (entry);
+		if (new Date(dateEng).toLocaleDateString () == "Invalid Date") {
+			this._setWrongDateStyle (entry);
+		} else {
+			// remove wrong date style (if any)
+			this._removeWrondDateStyle (entry);
+		}	
+	    
 	  }
 	
 	}
