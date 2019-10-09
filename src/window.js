@@ -18,14 +18,14 @@
 
 const { GObject, Gtk } = imports.gi;
 
-var NaspiCalculatorWindow = GObject.registerClass({
+var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
     InternalChildren: ['next1', 'previous1']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
     
-    _init(application) {
-        super._init({ application });
+    _init (application) {
+        super._init ({ application });
     }
     
     _setWrongDateStyle (entry) {
@@ -57,45 +57,45 @@ var NaspiCalculatorWindow = GObject.registerClass({
 		 * DD/MM/YYYY
 		 */
 		 
-		var entryText = entry.get_text();
+		var entryText = entry.get_text ();
 		var entryLength = entryText.length;
 		
 		if (entryLength == 0) {
-			print("Do nothing (empty entry)");
+			print ("Do nothing (empty entry)");
 			return;
 		}
 		
-		switch(entryText.split("/").length-1) { // # of occurrence of /
+		switch (entryText.split ("/").length-1) { // # of occurrence of /
 				
 			case 0:
 				if ( (entryLength == 6 ) || (entryLength == 8) ) {
-					var DD = entryText.slice(0,2);
-					var MM = entryText.slice(2,4);
-					var YY = entryText.slice(4); 
+					var DD = entryText.slice (0,2);
+					var MM = entryText.slice (2,4);
+					var YY = entryText.slice (4); 
 					break;
 				} else {
 					// TODO bordo entry in rosso
 					this._setWrongDateStyle (entry);
-					print("Bordo rosso !!!");
+					print ("Bordo rosso !!!");
 					return;
 				}
 				
 			case 2:
 				if ( (entryLength > 5) && (entryLength < 11) ) {
-					var [DD, MM, YY] = entryText.split("/");
+					var [DD, MM, YY] = entryText.split ("/");
 					break;
 				} else {
 					// TODO bordo entry in rosso
-					this._setWrongDateStyle(entry);
-					print("Bordo rosso !!!");
+					this._setWrongDateStyle (entry);
+					print ("Bordo rosso !!!");
 					return;
 				}
 				
 			default:
 				print ("default")
 				// TODO bordo entry in rosso
-				this._setWrongDateStyle(entry);
-				print("Bordo rosso !!!");
+				this._setWrongDateStyle (entry);
+				print ("Bordo rosso !!!");
 				return;
 		}
 		// date is ok, let's compose it in english format
@@ -103,8 +103,8 @@ var NaspiCalculatorWindow = GObject.registerClass({
 			YY = "20" + YY;
 		}
 		var dateEng = MM + "/" + DD + "/" + YY;
-		print( "data inglese: " + dateEng);
-		print( new Date(dateEng).toLocaleDateString() );	
+		print ( "data inglese: " + dateEng);
+		print ( new Date (dateEng).toLocaleDateString () );	
 	    // remove wrong date style (if any)
 	    this._removeWrondDateStyle (entry);
 	  }

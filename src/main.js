@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-pkg.initGettext();
-pkg.initFormat();
-pkg.require({
+pkg.initGettext ();
+pkg.initFormat ();
+pkg.require ({
   'Gio': '2.0',
   'Gtk': '3.0'
 });
@@ -27,33 +27,33 @@ const { Gio, Gtk, Gdk } = imports.gi;
 
 const { NaspiCalculatorWindow } = imports.window;
 
-function main(argv) {
-    const application = new Gtk.Application({
+function main (argv) {
+    const application = new Gtk.Application ({
         application_id: 'com.github.medeotl.NASpI-Calculator',
         flags: Gio.ApplicationFlags.FLAGS_NONE,
     });
 
-	application.connect('startup', app => {
-		let style_provider = new Gtk.CssProvider();
-		style_provider.load_from_resource(
+	application.connect ('startup', app => {
+		let style_provider = new Gtk.CssProvider ();
+		style_provider.load_from_resource (
 			"/com/github/medeotl/NASpI-Calculator/application.css"
 		);
-		Gtk.StyleContext.add_provider_for_screen(
+		Gtk.StyleContext.add_provider_for_screen (
 			Gdk.Screen.get_default(),
             style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION 
         );		
 	});
 
-    application.connect('activate', app => {
+    application.connect ('activate', app => {
         let activeWindow = app.activeWindow;
         
         if (!activeWindow) {
-            activeWindow = new NaspiCalculatorWindow(app);
+            activeWindow = new NaspiCalculatorWindow (app);
         }
 
-        activeWindow.present();
+        activeWindow.present ();
     });
 
-    return application.run(argv);
+    return application.run (argv);
 }
