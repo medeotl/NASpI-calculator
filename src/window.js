@@ -104,13 +104,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 		}
 		var dateEng = MM + "/" + DD + "/" + YY;
 		print ( "data inglese: " + dateEng);
-		if (new Date(dateEng).toLocaleDateString () == "Invalid Date") {
-			this._setWrongDateStyle (entry);
-		} else {
+		if (new Date(dateEng).getDate () == DD) {
 			// remove wrong date style (if any)
 			this._removeWrondDateStyle (entry);
-			// write it in entry
+			// write date in entry
 			entry.set_text (DD + "/" + MM + "/" + YY);
+		} else { // date is uncorrect
+			this._setWrongDateStyle (entry);
 		}	
 	    
 	  }
