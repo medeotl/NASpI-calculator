@@ -115,6 +115,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
+                        <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -182,6 +183,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
+                        <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
