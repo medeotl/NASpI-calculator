@@ -17,6 +17,7 @@
  */
 
 const { GObject, Gtk } = imports.gi;
+const Util = imports.util;
 
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
@@ -29,91 +30,39 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
     
     _setWrongDateStyle (entry) {
-		// style entry in red
+		/* style entry in red */
 		let context = entry.get_style_context ();
 		context.add_class ("wrong-date");
 	}
 	
 	_removeWrondDateStyle (entry) {
-		// remove red style
+		/* remove red style */
 		let context = entry.get_style_context ();
 		context.remove_class ("wrong-date");
 	}
 	
     _onEntryLostFocus (entry) {
-		/* Validate date inserted in entry
-		 * 
-		 * valide formats of the date:
-		 * 
-		 * DDMMYY
-		 * DDMMYYYY
-		 * D/M/YY
-		 * D/M/YYYY
-		 * D/MM/YY
-		 * D/MM/YYYY
-		 * DD/M/YY
-		 * DD/M/YYYY
-		 * DD/MM/YY
-		 * DD/MM/YYYY
-		 */
+		/* validate date and format it as DD/MM/YYYY 
+		 * - if date is valid remove wrong-date style
+		 * - else add wrong-date style 
+		 */		 
 		 
-		var entryText = entry.get_text ();
-		var entryLength = entryText.length;
-		
-		if (entryLength == 0) {
+		let date = entry.get_text ();
+
+		if (date.length == 0) {
 			print ("Do nothing (empty entry)");
 			return;
 		}
 		
-		switch (entryText.split ("/").length-1) { // # of occurrence of /
-				
-			case 0:
-				if ( (entryLength == 6 ) || (entryLength == 8) ) {
-					var DD = entryText.slice (0,2);
-					var MM = entryText.slice (2,4);
-					var YY = entryText.slice (4); 
-					break;
-				} else {
-					// TODO bordo entry in rosso
-					this._setWrongDateStyle (entry);
-					print ("Bordo rosso !!!");
-					return;
-				}
-				
-			case 2:
-				if ( (entryLength > 5) && (entryLength < 11) ) {
-					var [DD, MM, YY] = entryText.split ("/");
-					break;
-				} else {
-					// TODO bordo entry in rosso
-					this._setWrongDateStyle (entry);
-					print ("Bordo rosso !!!");
-					return;
-				}
-				
-			default:
-				print ("default")
-				// TODO bordo entry in rosso
-				this._setWrongDateStyle (entry);
-				print ("Bordo rosso !!!");
-				return;
-		}
-		// let's compose date in english format
-		if (YY.length == 2) {
-			YY = "20" + YY;
-		}
-		var dateEng = MM + "/" + DD + "/" + YY;
-		print ( "data inglese: " + dateEng);
-		if (new Date(dateEng).getDate () == DD) {
+		let formattedDate = Util.formatDate (date);
+		if (Util.isDateValid (formattedDate)) {
 			// remove wrong date style (if any)
 			this._removeWrondDateStyle (entry);
 			// write date in entry
-			entry.set_text (DD + "/" + MM + "/" + YY);
-		} else { // date is uncorrect
+			entry.set_text (formattedDate);
+		} else { 
 			this._setWrongDateStyle (entry);
 		}	
-	    
-	  }
 	
 	}
 	
