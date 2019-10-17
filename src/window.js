@@ -22,7 +22,7 @@ const Util = imports.util;
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['next1', 'previous1']
+    InternalChildren: ['next1', 'previous1', 'effectEntry']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
     
     _init (application) {
@@ -42,16 +42,16 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onEntryLostFocus (entry) {
-        /* validate date and format it as DD/MM/YYYY 
+        /* validate date and format it as DD/MM/YYYY
          * - if date is valid remove wrong-date style
-         * - else add wrong-date style 
+         * - else add wrong-date style
          */
          
         let date = entry.get_text ();
 
         if (date.length == 0) {
             print ("Do nothing (empty entry)");
-            return;
+            return 0;  // empty string
         }
 
         let formattedDate = Util.formatDate (date);
@@ -60,10 +60,22 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             this._removeWrondDateStyle (entry);
             // write date in entry
             entry.set_text (formattedDate);
-        } else { 
+            return formattedDate;  // valid date
+        } else {
             this._setWrongDateStyle (entry);
+            return -1  // invalid date
         }
-
     }
 
-);
+    _onSubmissionEntryLostFocus (entry) {
+        /* validate date of submission entry (data presentazione)
+         * if date valid, copy it to effect entry (decorrenza)
+         */
+
+        let formattedDate = this._onEntryLostFocus (entry);
+        if (isNaN (formattedDate)) {
+            this._effectEntry.set_text (formattedDate)
+        }
+    }
+
+});

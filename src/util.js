@@ -1,6 +1,6 @@
 function formatDate (date) {
     /* Check if the date is in one of the valid formats 
-     * if it is, put it in DD/MM/YYYY format
+     * if it is, return it in DD/MM/YYYY format
      * 
      * valid formats of the date:
      * 
