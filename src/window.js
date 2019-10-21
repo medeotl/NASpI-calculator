@@ -22,7 +22,8 @@ const Util = imports.util;
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'effectEntry']
+    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry',
+					   'effectEntry']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
     
     _init (application) {
@@ -93,6 +94,23 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             new Date (YY, MM-1, DD+1).toLocaleString()
         );
         this._prevDayBtn.set_sensitive (true);
+    }
+
+    _onPrevDayBtnClicked (button) {
+        /* decrease effect date by one day */
+
+        let date = this._effectEntry.get_text ();
+        let DD = Number (date.slice (0,2));
+        let MM = Number (date.slice (3,5));
+        let YY = Number (date.slice (6));
+        this._effectEntry.set_text (
+            new Date (YY, MM - 1, DD - 1).toLocaleString()
+        );
+        let submissionDate = this._submissionEntry.get_text ();
+        let effectDate = this._effectEntry.get_text ();
+        if (effectDate == submissionDate) {
+			this._prevDayBtn.set_sensitive (false);
+		}
     }
 
 });

@@ -169,7 +169,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkEntry">
+                      <object class="GtkEntry" id="submissionEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
@@ -220,6 +220,7 @@
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_onPrevDayBtnClicked" swapped="no"/>
                             <child>
                               <object class="GtkImage">
                                 <property name="visible">True</property>
