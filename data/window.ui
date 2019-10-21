@@ -64,6 +64,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
+                        <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
@@ -105,6 +106,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
+                        <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
@@ -173,6 +175,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
+                        <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onSubmissionEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
@@ -240,6 +243,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">10</property>
+                            <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -308,6 +312,8 @@
                       <object class="GtkEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="max_length">3</property>
+                        <property name="placeholder_text" translatable="yes">123</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -348,6 +354,7 @@
                       <object class="GtkEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">€ 1.234,56</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
