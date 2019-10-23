@@ -243,9 +243,9 @@
                         <child>
                           <object class="GtkEntry" id="effectEntry">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="editable">False</property>
                             <property name="max_length">10</property>
-                            <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
