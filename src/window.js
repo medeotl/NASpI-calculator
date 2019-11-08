@@ -113,4 +113,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
+    _checkNumeric (entry, inserted_char) {
+		/* allow insertion of numeric only values */
+		if (! (inserted_char >='0' && inserted_char <= '9') ) {
+			GObject.signal_stop_emission_by_name(entry, "insert-text");
+		}
+	}
+
 });
