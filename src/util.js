@@ -18,7 +18,7 @@ function formatDate (date) {
      
     var dateLength = date.length;
     
-    switch (date.split ("/").length-1) { // # of occurrences of /
+    switch (date.split ("/").length-1) { // # of occurrences of "/"
             
         case 0:
             if ( (dateLength == 6 ) || (dateLength == 8) ) {
@@ -44,7 +44,7 @@ function formatDate (date) {
                 return -1;
             }
             
-        default: // only one or more then two occurrences of /
+        default: // only one or more then two occurrences of "/"
             return -1;
     }
     
