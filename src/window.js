@@ -114,10 +114,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkNumeric (entry, inserted_char) {
-		/* allow insertion of numeric only values */
-		if (! (inserted_char >='0' && inserted_char <= '9') ) {
-			GObject.signal_stop_emission_by_name(entry, "insert-text");
+		/* allow insertion of numeric only values, or a comma*/
+		if (inserted_char >='0' && inserted_char <= '9') {
+			// numeric value always accepted	
+			return; 
+		} else if (inserted_char == ',') {
+			// only one comma accepted
+			if (entry.get_text().split(",").length -1 == 0) {
+				return;
+			}
 		}
+		// unallowed value
+		GObject.signal_stop_emission_by_name(entry, "insert-text");
 	}
-
 });
