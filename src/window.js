@@ -70,6 +70,25 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
+    _onMoneyEntryLostFocus (entry) {
+	    /* add formatted text €, space and dots
+		 * example: 12345,67 --> € 1.234,67
+		 */
+        // TODO insert proper dots, allow only 2 digits decimal
+
+
+		let averageMontlySalary = entry.get_text ();
+		//~ let [value, decimal] = averageMontlySalary.split(",");
+		entry.set_text ("€ " + averageMontlySalary);
+	}
+
+	_onMoneyEntryGetFocus (entry) {
+	    /* remove "€ " to make user focus in inserting numeric values */
+
+		let averageMontlySalary = entry.get_text ();
+		entry.set_text (averageMontlySalary.slice (2) );
+	}
+
     _onSubmissionEntryLostFocus (entry) {
         /* validate date of submission entry (data presentazione)
          * if date valid, copy it to effect entry (decorrenza)
@@ -115,6 +134,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _checkNumeric (entry, inserted_char) {
 		/* allow insertion of numeric only values, or a comma*/
+
+		// HACK: first if should be avoided
+		print ("_checkNumeric - ", inserted_char);
+		if (inserted_char.length > 1 ) {
+			// value changed by program via set_text ()
+			return;
+		}
 		if (inserted_char >='0' && inserted_char <= '9') {
 			// numeric value always accepted	
 			return; 
