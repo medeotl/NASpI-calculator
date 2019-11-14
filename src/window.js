@@ -70,24 +70,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onMoneyEntryLostFocus (entry) {
-	    /* add formatted text €, space and dots
-		 * example: 12345,67 --> € 1.234,67
-		 */
-        // TODO insert proper dots, allow only 2 digits decimal
-
-		let averageMontlySalary = entry.get_text ();
-		//~ let [value, decimal] = averageMontlySalary.split(",");
-		entry.set_text ("€ " + averageMontlySalary);
-	}
-
-	_onMoneyEntryGetFocus (entry) {
-	    /* remove "€ " to make user focus in inserting numeric values */
-
-		let averageMontlySalary = entry.get_text ();
-		entry.set_text (averageMontlySalary.slice (2) );
-	}
-
     _onSubmissionEntryLostFocus (entry) {
         /* validate date of submission entry (data presentazione)
          * if date valid, copy it to effect entry (decorrenza)
@@ -152,4 +134,22 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 		// unallowed value
 		GObject.signal_stop_emission_by_name(entry, "insert-text");
 	}
+
+    _onMoneyEntryLostFocus (entry) {
+	    /* add formatted text €, space and dots
+		 * example: 12345,67 --> € 1.234,67
+		 */
+        // TODO insert proper dots, allow only 2 digits decimal
+
+		let averageMontlySalary = entry.get_text ();
+		//~ let [value, decimal] = averageMontlySalary.split(",");
+		entry.set_text ("€ " + averageMontlySalary);
+	}
+
+	_onMoneyEntryGetFocus (entry) {
+	    /* remove "€ " to make user focus in inserting numeric values */
+
+		let averageMontlySalary = entry.get_text ();
+		entry.set_text (averageMontlySalary.slice (2) );
+	}	
 });
