@@ -44,7 +44,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         context.remove_class ("wrong-date");
     }
 
-    _onEntryLostFocus (entry) {
+    _onDateEntryLostFocus (entry) {
         /* validate date and format it as DD/MM/YYYY
          * - if date is valid remove wrong-date style
          * - else add wrong-date style
@@ -66,7 +66,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             return formattedDate;  // valid date
         } else {
             this._setWrongDateStyle (entry);
-            return -1  // invalid date
+            return -1;  // invalid date
         }
     }
 
@@ -75,7 +75,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 		 * example: 12345,67 --> € 1.234,67
 		 */
         // TODO insert proper dots, allow only 2 digits decimal
-
 
 		let averageMontlySalary = entry.get_text ();
 		//~ let [value, decimal] = averageMontlySalary.split(",");
@@ -94,7 +93,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * if date valid, copy it to effect entry (decorrenza)
          */
 
-        let formattedDate = this._onEntryLostFocus (entry);
+        let formattedDate = this._onDateEntryLostFocus (entry);
         if (isNaN (formattedDate)) {
             this._effectEntry.set_text (formattedDate);
             this._nextDayBtn.set_sensitive (true);

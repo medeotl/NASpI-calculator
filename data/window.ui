@@ -66,7 +66,7 @@
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
                         <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
-                        <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
+                        <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -108,7 +108,7 @@
                         <property name="can_focus">True</property>
                         <property name="max_length">10</property>
                         <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
-                        <signal name="focus-out-event" handler="_onEntryLostFocus" swapped="no"/>
+                        <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
