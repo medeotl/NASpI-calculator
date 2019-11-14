@@ -1,7 +1,7 @@
 function formatDate (date) {
-    /* Check if the date is in one of the valid formats 
-     * if it is, return it in DD/MM/YYYY format
-     * 
+    /* return date formatted as DD/MM/YYYY if it is in one of the valid formats
+     * else return -1
+     *
      * valid formats of the date:
      * 
      * DDMMYY
@@ -44,7 +44,7 @@ function formatDate (date) {
                 return -1;
             }
             
-        default: // only one or more then two occurrences of "/"
+        default: // 1 or 2+ occurrences of "/"
             return -1;
     }
     
