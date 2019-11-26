@@ -25,21 +25,21 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry',
                        'effectEntry']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
-    
+
     _init (application) {
         super._init ({ application });
     }
-    
+
     _setWrongDateStyle (entry) {
         /* style entry in red */
-        
+
         let context = entry.get_style_context ();
         context.add_class ("wrong-date");
     }
-    
+
     _removeWrondDateStyle (entry) {
         /* remove red style */
-        
+
         let context = entry.get_style_context ();
         context.remove_class ("wrong-date");
     }
@@ -49,7 +49,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * - if date is valid remove wrong-date style
          * - else add wrong-date style
          */
-         
+
         let date = entry.get_text ();
 
         if (date.length == 0) {
@@ -123,12 +123,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 			 key_val <= Gdk.keyval_from_name ('9') ) {
 				// numeric value always accepted
 				return;
-		} else if (key_val == Gdk.keyval_from_name ('comma') ) {
+		}
+		if ( key_val >= Gdk.keyval_from_name ('KP_0')
+			 &&
+			 key_val <= Gdk.keyval_from_name ('KP_9') ) {
+				// keypad numeric value always accepted
+				return;
+		}
+		if (key_val == Gdk.keyval_from_name ('comma') ) {
 			// only one comma accepted
 			if (entry.get_text ().split (',').length-1 == 0) {
 				return;
 			}
-		} else if (key_val == Gdk.keyval_from_name ('Delete')				   
+		}
+		if (key_val == Gdk.keyval_from_name ('Delete')
 				   ||
 				   key_val == Gdk.keyval_from_name ('BackSpace')
 				   ||
@@ -140,7 +148,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 				   ||
                    key_val == Gdk.keyval_from_name ('End')
 				    ) {
-			// these keys are always accepted		   
+			// these keys are always accepted
 			return;
 		}
 		// unallowed value
@@ -176,7 +184,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 		if (new_value != value) {
 			entry.set_text (new_value + decimal);
 		}
-		
+
 	}
-	
+
 });
