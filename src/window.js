@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const { GObject, Gtk } = imports.gi;
+const { GObject, Gtk, Gdk } = imports.gi;
 const Util = imports.util;
 
 var NaspiCalculatorWindow = GObject.registerClass ({
@@ -113,36 +113,49 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _checkNumeric (entry, inserted_char) {
+    _checkNumeric (entry, event) {
 		/* allow insertion of numeric only values, or a comma*/
 
-		// HACK: first if should be avoided
-		print ("_checkNumeric - ", inserted_char);
-		if (inserted_char.length > 1 ) {
-			// value changed by program via set_text ()
-			return;
-		}
-		if (inserted_char >='0' && inserted_char <= '9') {
-			// numeric value always accepted	
-			return; 
-		} else if (inserted_char == ',') {
+		var key_val = event.get_keyval ()[1];
+		print ("@@@ ", key_val);
+		if ( key_val >= Gdk.keyval_from_name ('0')
+			 &&
+			 key_val <= Gdk.keyval_from_name ('9') ) {
+				// numeric value always accepted
+				return;
+		} else if (key_val == Gdk.keyval_from_name ('comma') ) {
 			// only one comma accepted
-			if (entry.get_text().split(",").length -1 == 0) {
+			if (entry.get_text ().split (',').length-1 == 0) {
 				return;
 			}
+		} else if (key_val == Gdk.keyval_from_name ('Delete')				   
+				   ||
+				   key_val == Gdk.keyval_from_name ('BackSpace')
+				   ||
+				   key_val == Gdk.keyval_from_name ('Right')
+				   ||
+				   key_val == Gdk.keyval_from_name ('Left')
+				   ||
+				   key_val == Gdk.keyval_from_name ('Home')
+				   ||
+                   key_val == Gdk.keyval_from_name ('End')
+				    ) {
+			// these keys are always accepted		   
+			return;
 		}
 		// unallowed value
-		GObject.signal_stop_emission_by_name(entry, "insert-text");
+		GObject.signal_stop_emission_by_name(entry, "key-press-event");
 	}
 
     _onMoneyEntryLostFocus (entry) {
-	    /* add formatted text €, space and dots
-		 * example: 12345,67 --> € 1.234,67
+	    /* add "€ " to the text
+		 * example: "12.345,67" --> "€ 12.345,67"
 		 */
-        // TODO insert proper dots, allow only 2 digits decimal
 
 		let averageMontlySalary = entry.get_text ();
-		//~ let [value, decimal] = averageMontlySalary.split(",");
+		if (averageMontlySalary.length == 0) {
+			return;
+		}
 		entry.set_text ("€ " + averageMontlySalary);
 	}
 
@@ -151,5 +164,19 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
 		let averageMontlySalary = entry.get_text ();
 		entry.set_text (averageMontlySalary.slice (2) );
-	}	
+		// TODO - set cursor position at the right position
+	}
+
+	_pippo (entry) {
+		let averageMontlySalary = entry.get_text ();
+		let [value, decimal] = averageMontlySalary.split(",");
+		decimal = (decimal == undefined) ? "" : "," + decimal;
+		//~ print ("@@@ ", value, " @@@ ", value.replace ('.', '') );
+		var new_value = Util.add_dots (value.replace (/\./g, '') );
+		if (new_value != value) {
+			entry.set_text (new_value + decimal);
+		}
+		
+	}
+	
 });

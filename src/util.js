@@ -71,7 +71,23 @@ function isDateValid (date) {
     }
 }
 
+function add_dots (value, new_value = "") {
+	/* recursively add dots to numeric value:
+	 * 12132143432 --> 12.132.143.432
+	 */
+	if (value.length < 4) {
+		print (value + new_value);
+		return (value + new_value);
+	} else {
+		new_value = "." + value.slice (-3) + new_value;
+		return add_dots (value.slice (0,-3), new_value );
+	}	  
+	
+}
+
 function test () {
+
+	add_dots ("1234567");
 
     print (isDateValid (formatDate ("010775") ) );
     print (isDateValid (formatDate ("01072075") ) );
@@ -106,3 +122,5 @@ function test () {
     print (isDateValid (formatDate ("DD/MM/YYYY") ) );
 
 }
+
+//~ test ();
