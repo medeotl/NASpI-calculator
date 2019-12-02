@@ -3,7 +3,7 @@ function formatDate (date) {
      * else return -1
      *
      * valid formats of the date:
-     * 
+     *
      * DDMMYY
      * DDMMYYYY
      * D/M/YY
@@ -15,21 +15,21 @@ function formatDate (date) {
      * DD/MM/YY
      * DD/MM/YYYY
      */
-     
+
     var dateLength = date.length;
-    
+
     switch (date.split ("/").length-1) { // # of occurrences of "/"
-            
+
         case 0:
             if ( (dateLength == 6 ) || (dateLength == 8) ) {
                 var DD = date.slice (0,2);
                 var MM = date.slice (2,4);
-                var YY = date.slice (4); 
+                var YY = date.slice (4);
                 break;
             } else {
                 return -1;
             }
-            
+
         case 2:
             if ( (dateLength > 5) && (dateLength < 11) ) {
                 var [DD, MM, YY] = date.split ("/");
@@ -43,15 +43,15 @@ function formatDate (date) {
             } else {
                 return -1;
             }
-            
+
         default: // 1 or 2+ occurrences of "/"
             return -1;
     }
-    
+
     if (YY.length == 2) {
         YY = '20' + YY;
     }
-    
+
     return (DD + "/" + MM + "/" + YY);
 
 }
@@ -66,28 +66,28 @@ function isDateValid (date) {
 
     if (new Date(dateEng).getDate () == DD) {
         return true;
-    } else { 
+    } else {
         return false;
     }
 }
 
 function add_dots (value, new_value = "") {
-	/* recursively add dots to numeric value:
-	 * 12132143432 --> 12.132.143.432
-	 */
-	if (value.length < 4) {
-		print (value + new_value);
-		return (value + new_value);
-	} else {
-		new_value = "." + value.slice (-3) + new_value;
-		return add_dots (value.slice (0,-3), new_value );
-	}	  
-	
+    /* recursively add dots to numeric value:
+     * 12132143432 --> 12.132.143.432
+     */
+    if (value.length < 4) {
+        print (value + new_value);
+        return (value + new_value);
+    } else {
+        new_value = "." + value.slice (-3) + new_value;
+        return add_dots (value.slice (0,-3), new_value );
+    }
+
 }
 
 function test () {
 
-	add_dots ("1234567");
+    add_dots ("1234567");
 
     print (isDateValid (formatDate ("010775") ) );
     print (isDateValid (formatDate ("01072075") ) );
