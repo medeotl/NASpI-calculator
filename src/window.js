@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const { GObject, Gtk, Gdk } = imports.gi;
+const { GObject, Gtk, Gdk, GLib } = imports.gi;
+const Mainloop = imports.mainloop;
 const Util = imports.util;
 
 var NaspiCalculatorWindow = GObject.registerClass ({
@@ -114,77 +115,86 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkNumeric (entry, event) {
-		/* allow insertion of numeric only values, or a comma*/
+        /* allow insertion of numeric only values, or a comma*/
 
-		var key_val = event.get_keyval ()[1];
-		print ("@@@ ", key_val);
-		if ( key_val >= Gdk.keyval_from_name ('0')
-			 &&
-			 key_val <= Gdk.keyval_from_name ('9') ) {
-				// numeric value always accepted
-				return;
-		}
-		if ( key_val >= Gdk.keyval_from_name ('KP_0')
-			 &&
-			 key_val <= Gdk.keyval_from_name ('KP_9') ) {
-				// keypad numeric value always accepted
-				return;
-		}
-		if (key_val == Gdk.keyval_from_name ('comma') ) {
-			// only one comma accepted
-			if (entry.get_text ().split (',').length-1 == 0) {
-				return;
-			}
-		}
-		if (key_val == Gdk.keyval_from_name ('Delete')
-				   ||
-				   key_val == Gdk.keyval_from_name ('BackSpace')
-				   ||
-				   key_val == Gdk.keyval_from_name ('Right')
-				   ||
-				   key_val == Gdk.keyval_from_name ('Left')
-				   ||
-				   key_val == Gdk.keyval_from_name ('Home')
-				   ||
+        var key_val = event.get_keyval ()[1];
+        print ("@@@ ", key_val);
+        if ( key_val >= Gdk.keyval_from_name ('0')
+             &&
+             key_val <= Gdk.keyval_from_name ('9') ) {
+                // numeric value always accepted
+                return;
+        }
+        if ( key_val >= Gdk.keyval_from_name ('KP_0')
+             &&
+             key_val <= Gdk.keyval_from_name ('KP_9') ) {
+                // keypad numeric value always accepted
+                return;
+        }
+        if (key_val == Gdk.keyval_from_name ('comma') ) {
+            // only one comma accepted
+            if (entry.get_text ().split (',').length-1 == 0) {
+                return;
+            }
+        }
+        if (key_val == Gdk.keyval_from_name ('Delete')
+                   ||
+                   key_val == Gdk.keyval_from_name ('BackSpace')
+                   ||
+                   key_val == Gdk.keyval_from_name ('Right')
+                   ||
+                   key_val == Gdk.keyval_from_name ('Left')
+                   ||
+                   key_val == Gdk.keyval_from_name ('Home')
+                   ||
                    key_val == Gdk.keyval_from_name ('End')
-				    ) {
-			// these keys are always accepted
-			return;
-		}
-		// unallowed value
-		GObject.signal_stop_emission_by_name(entry, "key-press-event");
-	}
+                    ) {
+            // these keys are always accepted
+            return;
+        }
+        // unallowed value
+        GObject.signal_stop_emission_by_name(entry, "key-press-event");
+    }
 
     _onMoneyEntryLostFocus (entry) {
-	    /* add "€ " to the text
-		 * example: "12.345,67" --> "€ 12.345,67"
-		 */
+        /* add "€ " to the text
+         * example: "12345,67" --> "€ 12.345,67"
+         */
 
-		let averageMontlySalary = entry.get_text ();
-		if (averageMontlySalary.length == 0) {
-			return;
-		}
-		entry.set_text ("€ " + averageMontlySalary);
-	}
+        let averageMontlySalary = entry.get_text ();
+        if (averageMontlySalary.length == 0) {
+            return;
+        }
+        entry.set_text ("€ " + averageMontlySalary);
+    }
 
-	_onMoneyEntryGetFocus (entry) {
-	    /* remove "€ " to make user focus in inserting numeric values */
+    _onMoneyEntryGetFocus (entry) {
+        /* remove "€ " to make user focus in inserting numeric values */
 
-		let averageMontlySalary = entry.get_text ();
-		entry.set_text (averageMontlySalary.slice (2) );
-		// TODO - set cursor position at the right position
-	}
+        let averageMontlySalary = entry.get_text ();
+        entry.set_text (averageMontlySalary.slice (2) );
+        // TODO - set cursor position at the right position
+    }
 
-	_pippo (entry) {
-		let averageMontlySalary = entry.get_text ();
-		let [value, decimal] = averageMontlySalary.split(",");
-		decimal = (decimal == undefined) ? "" : "," + decimal;
-		//~ print ("@@@ ", value, " @@@ ", value.replace ('.', '') );
-		var new_value = Util.add_dots (value.replace (/\./g, '') );
-		if (new_value != value) {
-			entry.set_text (new_value + decimal);
-		}
+    _onMoneyEntryChange (entry) {
 
-	}
+        function update_cursor_position () {
+            // used because GLib.idle_add doesn't accept function parameters
+            let new_pos = entry.get_position () + 1;
+            entry.set_position (new_pos);
+        }
+        let averageMontlySalary = entry.get_text ();
+        let [value, decimal] = averageMontlySalary.split(",");
+        decimal = (decimal == undefined) ? "" : "," + decimal;
+        var new_value = Util.add_dots (value.replace (/\./g, '') );
+        if (new_value != value) {
+            entry.set_text (new_value + decimal);
+            // move cursor
+            print ("@@@ cursor at position ", entry.get_position () );
+            GLib.idle_add(200, update_cursor_position);
+            print ("@@@ cursor at position ", entry.get_position () );
+        }
+
+    }
 
 });
