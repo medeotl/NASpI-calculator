@@ -358,7 +358,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="placeholder_text" translatable="yes">€ 1.234,56</property>
-                        <signal name="changed" handler="_onMoneyEntryChange" swapped="no"/>
                         <signal name="focus-in-event" handler="_onMoneyEntryGetFocus" swapped="no"/>
                         <signal name="focus-out-event" handler="_onMoneyEntryLostFocus" swapped="no"/>
                         <signal name="key-press-event" handler="_checkNumeric" swapped="no"/>

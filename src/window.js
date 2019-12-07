@@ -115,14 +115,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkNumeric (entry, event) {
-        /* allow insertion of numeric only values, or a comma*/
+        /* allow insertion of numeric only values, or one comma
+         * then call:
+         * _onMoneyEntryIncrease if key_val is numeric
+         * _onMoneyEntryDecrease if key_val is cancel or delete
+         */
 
+        print ("@@@ cheknumeric cursor at position ", entry.get_position () );
         var key_val = event.get_keyval ()[1];
-        print ("@@@ ", key_val);
+        print ("@@@ key_val ", key_val);
         if ( key_val >= Gdk.keyval_from_name ('0')
              &&
              key_val <= Gdk.keyval_from_name ('9') ) {
                 // numeric value always accepted
+                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) )
                 return;
         }
         if ( key_val >= Gdk.keyval_from_name ('KP_0')
@@ -176,19 +182,30 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         // TODO - set cursor position at the right position
     }
 
-    _onMoneyEntryChange (entry) {
-
+    _onMoneyEntryIncrease (entry, new_digit) {
+        /* Move dot(s) in the right place and move cursor accordingly */
         function update_cursor_position () {
+            print ("@@@ puntino ", entry.get_text() );
             // used because GLib.idle_add doesn't accept function parameters
-            let new_pos = entry.get_position () + 1;
-            entry.set_position (new_pos);
+            if (entry.get_text().charAt(1) == '.') {
+                // there's a new dot on the entry
+                entry.set_position (cursor_position + 2);
+            } else {
+                entry.set_position (cursor_position + 1);
+            }
         }
         let averageMontlySalary = entry.get_text ();
+        print ("@@@ averageMontlySalary:", averageMontlySalary);
+        print ("@@@ new digit:", new_digit);
         let [value, decimal] = averageMontlySalary.split(",");
+        // create new value accordingly to cursor position
+        var cursor_position = entry.get_position ();
+        value = value.slice(0, cursor_position) + new_digit + value.slice(cursor_position);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (value.replace (/\./g, '') );
         if (new_value != value) {
             entry.set_text (new_value + decimal);
+            GObject.signal_stop_emission_by_name(entry, "key-press-event");
             // move cursor
             print ("@@@ cursor at position ", entry.get_position () );
             GLib.idle_add(200, update_cursor_position);
@@ -196,5 +213,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
     }
+
+    _onMoneyEntryDecrease (entry, start_pos, end_pos) {
+        /* Move dot(s) in the right place and move cursor accordingly */
+        print ("@@@ decrease ", start_pos);
+        print ("@@@ decrease ", end_pos);
+    }
+
+
+
+
+
+
 
 });
