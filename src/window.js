@@ -121,9 +121,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * _onMoneyEntryDecrease if key_val is cancel or delete
          */
 
-        print ("@@@ cheknumeric cursor at position ", entry.get_position () );
         var key_val = event.get_keyval ()[1];
-        print ("@@@ key_val ", key_val);
         if ( key_val >= Gdk.keyval_from_name ('0')
              &&
              key_val <= Gdk.keyval_from_name ('9') ) {
@@ -185,7 +183,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _onMoneyEntryIncrease (entry, new_digit) {
         /* Move dot(s) in the right place and move cursor accordingly */
         function update_cursor_position () {
-            print ("@@@ puntino ", entry.get_text() );
             // used because GLib.idle_add doesn't accept function parameters
             if (entry.get_text().charAt(1) == '.') {
                 // there's a new dot on the entry
@@ -195,8 +192,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
         let averageMontlySalary = entry.get_text ();
-        print ("@@@ averageMontlySalary:", averageMontlySalary);
-        print ("@@@ new digit:", new_digit);
         let [value, decimal] = averageMontlySalary.split(",");
         // create new value accordingly to cursor position
         var cursor_position = entry.get_position ();
@@ -207,17 +202,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             entry.set_text (new_value + decimal);
             GObject.signal_stop_emission_by_name(entry, "key-press-event");
             // move cursor
-            print ("@@@ cursor at position ", entry.get_position () );
             GLib.idle_add(200, update_cursor_position);
-            print ("@@@ cursor at position ", entry.get_position () );
         }
 
     }
 
     _onMoneyEntryDecrease (entry, start_pos, end_pos) {
         /* Move dot(s) in the right place and move cursor accordingly */
-        print ("@@@ decrease ", start_pos);
-        print ("@@@ decrease ", end_pos);
     }
 
 
