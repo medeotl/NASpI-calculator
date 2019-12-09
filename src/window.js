@@ -126,13 +126,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
              &&
              key_val <= Gdk.keyval_from_name ('9') ) {
                 // numeric value always accepted
-                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) )
+                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) );
                 return;
         }
         if ( key_val >= Gdk.keyval_from_name ('KP_0')
              &&
              key_val <= Gdk.keyval_from_name ('KP_9') ) {
                 // keypad numeric value always accepted
+                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) );
                 return;
         }
         if (key_val == Gdk.keyval_from_name ('comma') ) {
@@ -141,20 +142,25 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 return;
             }
         }
-        if (key_val == Gdk.keyval_from_name ('Delete')
-                   ||
-                   key_val == Gdk.keyval_from_name ('BackSpace')
-                   ||
-                   key_val == Gdk.keyval_from_name ('Right')
-                   ||
-                   key_val == Gdk.keyval_from_name ('Left')
-                   ||
-                   key_val == Gdk.keyval_from_name ('Home')
-                   ||
-                   key_val == Gdk.keyval_from_name ('End')
-                    ) {
-            // these keys are always accepted
+        if (key_val == Gdk.keyval_from_name ('BackSpace') ) {
+            this._onMoneyEntryDecrease (entry, 'BackSpace');
             return;
+        }
+
+        if (key_val == Gdk.keyval_from_name ('Delete') ) {
+            this._onMoneyEntryDecrease (entry, 'Delete');
+            return;
+        }
+
+        if (key_val == Gdk.keyval_from_name ('Right')
+            ||
+            key_val == Gdk.keyval_from_name ('Left')
+            ||
+            key_val == Gdk.keyval_from_name ('Home')
+            ||
+            key_val == Gdk.keyval_from_name ('End') ) {
+                // these keys are always accepted
+                return;
         }
         // unallowed value
         GObject.signal_stop_emission_by_name(entry, "key-press-event");
@@ -181,7 +187,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onMoneyEntryIncrease (entry, new_digit) {
-        /* Move dot(s) in the right place and move cursor accordingly */
+        /* Add new digit, put dots accordingly and move cursor */
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
             if (entry.get_text().charAt(1) == '.') {
@@ -204,11 +210,51 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             // move cursor
             GLib.idle_add(200, update_cursor_position);
         }
-
     }
 
-    _onMoneyEntryDecrease (entry, start_pos, end_pos) {
-        /* Move dot(s) in the right place and move cursor accordingly */
+    _onMoneyEntryDecrease (entry, key_pressed) {
+        /* Remove the digit, put dots accordingly and move cursor */
+        function update_cursor_position () {
+            // used because GLib.idle_add doesn't accept function parameters
+            let value = entry.get_text();
+            switch (key_pressed) {
+                case 'Delete':
+                    if ( (value.charAt(3) == '.') || (value.length == 3) ) {
+                        entry.set_position (cursor_position - 1);
+                    } else {
+                        entry.set_position (cursor_position);
+                    }
+                    break;
+                case 'BackSpace' :
+                    if ( (value.charAt(3) == '.') || (value.length == 3) ) {
+                        entry.set_position (cursor_position - 2);
+                    } else {
+                        entry.set_position (cursor_position - 1);
+                    }
+                    break;
+            }
+        }
+
+        let averageMontlySalary = entry.get_text ();
+        let [value, decimal] = averageMontlySalary.split(",");
+        // create new value accordingly to cursor position
+        var cursor_position = entry.get_position ();
+        switch (key_pressed) {
+            case 'BackSpace':
+                value = value.slice (0, cursor_position-1) + value.slice (cursor_position);
+                break;
+            case 'Delete':
+                value = value.slice (0, cursor_position) + value.slice (cursor_position+1);
+                break;
+        }
+        decimal = (decimal == undefined) ? "" : "," + decimal;
+        var new_value = Util.add_dots (value.replace (/\./g, '') );
+        if (new_value != value) {
+            entry.set_text (new_value + decimal);
+            GObject.signal_stop_emission_by_name(entry, "key-press-event");
+            // move cursor
+            GLib.idle_add(200, update_cursor_position);
+        }
     }
 
 
