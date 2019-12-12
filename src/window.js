@@ -198,9 +198,15 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
         let averageMontlySalary = entry.get_text ();
+        var cursor_position = entry.get_position ();
+        var comma_position = averageMontlySalary.indexOf(",");
+        if (comma_position != -1 && cursor_position >= comma_position) {
+            return; // I'm inserting decimal value
+        }
         let [value, decimal] = averageMontlySalary.split(",");
         // create new value accordingly to cursor position
-        var cursor_position = entry.get_position ();
+
+
         value = value.slice(0, cursor_position) + new_digit + value.slice(cursor_position);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (value.replace (/\./g, '') );
