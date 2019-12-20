@@ -207,14 +207,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         // create new value accordingly to cursor position
 
 
-        value = value.slice(0, cursor_position) + new_digit + value.slice(cursor_position);
+        value = value.slice (0, cursor_position) + new_digit + value.slice(cursor_position);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (value.replace (/\./g, '') );
         if (new_value != value) {
             entry.set_text (new_value + decimal);
-            GObject.signal_stop_emission_by_name(entry, "key-press-event");
+            GObject.signal_stop_emission_by_name (entry, "key-press-event");
             // move cursor
-            GLib.idle_add(200, update_cursor_position);
+            GLib.idle_add (200, update_cursor_position);
         }
     }
 
@@ -241,15 +241,31 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
 
+        function move_cursor_right () {
+            // used when pressing Canc with curson before a dot
+            entry.set_position (cursor_position + 1);
+        }
+
         let averageMontlySalary = entry.get_text ();
-        let [value, decimal] = averageMontlySalary.split(",");
+        let [value, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
         var cursor_position = entry.get_position ();
         switch (key_pressed) {
             case 'BackSpace':
+                if (averageMontlySalary.charAt (cursor_position - 1) == '.') {
+                    // do not remove the dot!
+                    GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                    return;
+                };
                 value = value.slice (0, cursor_position-1) + value.slice (cursor_position);
                 break;
             case 'Delete':
+                if (averageMontlySalary.charAt (cursor_position) == '.') {
+                        // do not remove the dot but move on the right
+                        GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                        GLib.idle_add(200, move_cursor_right);
+                        return;
+                };
                 value = value.slice (0, cursor_position) + value.slice (cursor_position+1);
                 break;
         }
@@ -262,11 +278,5 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             GLib.idle_add(200, update_cursor_position);
         }
     }
-
-
-
-
-
-
 
 });
