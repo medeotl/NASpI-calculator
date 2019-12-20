@@ -192,22 +192,22 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             // used because GLib.idle_add doesn't accept function parameters
             if (entry.get_text ().charAt (1) == '.') {
                 // there's a new dot on the entry
-                entry.set_position (cursor_position + 2);
+                entry.set_position (cursor_pos + 2);
             } else {
-                entry.set_position (cursor_position + 1);
+                entry.set_position (cursor_pos + 1);
             }
         }
         let averageMontlySalary = entry.get_text ();
-        var cursor_position = entry.get_position ();
+        var cursor_pos = entry.get_position ();
         var comma_position = averageMontlySalary.indexOf (",");
-        if (comma_position != -1 && cursor_position >= comma_position) {
+        if (comma_position != -1 && cursor_pos >= comma_position) {
             return; // I'm inserting decimal value
         }
         let [value, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
 
 
-        value = value.slice (0, cursor_position) + new_digit + value.slice (cursor_position);
+        value = value.slice (0, cursor_pos) + new_digit + value.slice (cursor_pos);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (value.replace (/\./g, '') );
         if (new_value != value) {
@@ -226,16 +226,16 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             switch (key_pressed) {
                 case 'Delete':
                     if ( (value.charAt (3) == '.') || (value.length == 3) ) {
-                        entry.set_position (cursor_position - 1);
+                        entry.set_position (cursor_pos - 1);
                     } else {
-                        entry.set_position (cursor_position);
+                        entry.set_position (cursor_pos);
                     }
                     break;
                 case 'BackSpace' :
                     if ( (value.charAt(3) == '.') || (value.length == 3) ) {
-                        entry.set_position (cursor_position - 2);
+                        entry.set_position (cursor_pos - 2);
                     } else {
-                        entry.set_position (cursor_position - 1);
+                        entry.set_position (cursor_pos - 1);
                     }
                     break;
             }
@@ -243,30 +243,30 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         function move_cursor_right () {
             // used when pressing Canc with curson before a dot
-            entry.set_position (cursor_position + 1);
+            entry.set_position (cursor_pos + 1);
         }
 
         let averageMontlySalary = entry.get_text ();
         let [value, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
-        var cursor_position = entry.get_position ();
+        var cursor_pos = entry.get_position ();
         switch (key_pressed) {
             case 'BackSpace':
-                if (averageMontlySalary.charAt (cursor_position - 1) == '.') {
+                if (averageMontlySalary.charAt (cursor_pos - 1) == '.') {
                     // do not remove the dot!
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 };
-                value = value.slice (0, cursor_position-1) + value.slice (cursor_position);
+                value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
                 break;
             case 'Delete':
-                if (averageMontlySalary.charAt (cursor_position) == '.') {
-                        // do not remove the dot but move on the right
-                        GObject.signal_stop_emission_by_name (entry, "key-press-event");
-                        GLib.idle_add (200, move_cursor_right);
-                        return;
+                if (averageMontlySalary.charAt (cursor_pos) == '.') {
+                    // do not remove the dot but move on the right
+                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
+                    GLib.idle_add (200, move_cursor_right);
+                    return;
                 };
-                value = value.slice (0, cursor_position) + value.slice (cursor_position+1);
+                value = value.slice (0, cursor_pos) + value.slice (cursor_pos+1);
                 break;
         }
         decimal = (decimal == undefined) ? "" : "," + decimal;
