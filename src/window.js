@@ -90,9 +90,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let DD = Number (date.slice (0,2));
         let MM = Number (date.slice (3,5));
         let YY = Number (date.slice (6));
-        let newDate = new Date (YY, MM, DD + 1).toLocaleString();
+        let newDate = new Date (YY, MM, DD + 1).toLocaleString ();
         this._effectEntry.set_text (
-            new Date (YY, MM - 1, DD + 1).toLocaleString()
+            new Date (YY, MM - 1, DD + 1).toLocaleString ()
         );
         this._prevDayBtn.set_sensitive (true);
     }
@@ -105,7 +105,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let MM = Number (date.slice (3,5));
         let YY = Number (date.slice (6));
         this._effectEntry.set_text (
-            new Date (YY, MM - 1, DD - 1).toLocaleString()
+            new Date (YY, MM - 1, DD - 1).toLocaleString ()
         );
         let submissionDate = this._submissionEntry.get_text ();
         let effectDate = this._effectEntry.get_text ();
@@ -190,7 +190,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* Add new digit, put dots accordingly and move cursor */
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
-            if (entry.get_text().charAt(1) == '.') {
+            if (entry.get_text ().charAt (1) == '.') {
                 // there's a new dot on the entry
                 entry.set_position (cursor_position + 2);
             } else {
@@ -199,15 +199,15 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
         let averageMontlySalary = entry.get_text ();
         var cursor_position = entry.get_position ();
-        var comma_position = averageMontlySalary.indexOf(",");
+        var comma_position = averageMontlySalary.indexOf (",");
         if (comma_position != -1 && cursor_position >= comma_position) {
             return; // I'm inserting decimal value
         }
-        let [value, decimal] = averageMontlySalary.split(",");
+        let [value, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
 
 
-        value = value.slice (0, cursor_position) + new_digit + value.slice(cursor_position);
+        value = value.slice (0, cursor_position) + new_digit + value.slice (cursor_position);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (value.replace (/\./g, '') );
         if (new_value != value) {
@@ -222,10 +222,10 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* Remove the digit, put dots accordingly and move cursor */
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
-            let value = entry.get_text();
+            let value = entry.get_text ();
             switch (key_pressed) {
                 case 'Delete':
-                    if ( (value.charAt(3) == '.') || (value.length == 3) ) {
+                    if ( (value.charAt (3) == '.') || (value.length == 3) ) {
                         entry.set_position (cursor_position - 1);
                     } else {
                         entry.set_position (cursor_position);
@@ -254,7 +254,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             case 'BackSpace':
                 if (averageMontlySalary.charAt (cursor_position - 1) == '.') {
                     // do not remove the dot!
-                    GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 };
                 value = value.slice (0, cursor_position-1) + value.slice (cursor_position);
@@ -262,8 +262,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             case 'Delete':
                 if (averageMontlySalary.charAt (cursor_position) == '.') {
                         // do not remove the dot but move on the right
-                        GObject.signal_stop_emission_by_name(entry, "key-press-event");
-                        GLib.idle_add(200, move_cursor_right);
+                        GObject.signal_stop_emission_by_name (entry, "key-press-event");
+                        GLib.idle_add (200, move_cursor_right);
                         return;
                 };
                 value = value.slice (0, cursor_position) + value.slice (cursor_position+1);
@@ -273,9 +273,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         var new_value = Util.add_dots (value.replace (/\./g, '') );
         if (new_value != value) {
             entry.set_text (new_value + decimal);
-            GObject.signal_stop_emission_by_name(entry, "key-press-event");
+            GObject.signal_stop_emission_by_name (entry, "key-press-event");
             // move cursor
-            GLib.idle_add(200, update_cursor_position);
+            GLib.idle_add (200, update_cursor_position);
         }
     }
 
