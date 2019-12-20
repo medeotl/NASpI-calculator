@@ -133,7 +133,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
              &&
              key_val <= Gdk.keyval_from_name ('KP_9') ) {
                 // keypad numeric value always accepted
-                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) );
+                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val).slice(-1));
                 return;
         }
         if (key_val == Gdk.keyval_from_name ('comma') ) {
