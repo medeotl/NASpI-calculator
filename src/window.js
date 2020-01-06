@@ -166,6 +166,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GObject.signal_stop_emission_by_name(entry, "key-press-event");
     }
 
+    _onMoneyEntryGetFocus (entry) {
+        /* remove "€ " to make user focus in inserting numeric values */
+
+        let averageMontlySalary = entry.get_text ();
+        entry.set_text (averageMontlySalary.slice (2) );
+        // TODO - set cursor position at the right position
+    }
+
     _onMoneyEntryLostFocus (entry) {
         /* add "€ " to the text
          * example: "12345,67" --> "€ 12.345,67"
@@ -176,14 +184,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             return;
         }
         entry.set_text ("€ " + averageMontlySalary);
-    }
-
-    _onMoneyEntryGetFocus (entry) {
-        /* remove "€ " to make user focus in inserting numeric values */
-
-        let averageMontlySalary = entry.get_text ();
-        entry.set_text (averageMontlySalary.slice (2) );
-        // TODO - set cursor position at the right position
     }
 
     _onMoneyEntryIncrease (entry, new_digit) {
