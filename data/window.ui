@@ -360,7 +360,7 @@
                         <property name="placeholder_text" translatable="yes">€ 1.234,56</property>
                         <signal name="focus-in-event" handler="_onMoneyEntryGetFocus" swapped="no"/>
                         <signal name="focus-out-event" handler="_onMoneyEntryLostFocus" swapped="no"/>
-                        <signal name="key-press-event" handler="_checkNumeric" swapped="no"/>
+                        <signal name="key-press-event" handler="_onKeyPressed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

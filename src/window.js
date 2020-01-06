@@ -114,7 +114,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _checkNumeric (entry, event) {
+    _onKeyPressed (entry, event) {
         /* allow insertion of numeric only values, or one comma
          * then call:
          * _onMoneyEntryIncrease if key_val is numeric
