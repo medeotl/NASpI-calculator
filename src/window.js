@@ -114,6 +114,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
+    _checkNumeric (entry, new_text) {
+        /* allow insertion of numeric only valuse */
+        if (isNaN (new_text) ) {
+            // non passa lo straniero
+            GObject.signal_stop_emission_by_name(entry, "insert-text");
+        }
+    }
+
     _onKeyPressed (entry, event) {
         /* allow insertion of numeric only values, or one comma
          * then call:
