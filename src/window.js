@@ -183,14 +183,21 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onMoneyEntryLostFocus (entry) {
-        /* add "€ " to the text
-         * example: "12345,67" --> "€ 12.345,67"
+        /* add "€ " to the text, remove extra decimal digits
+         * example: "12345,6794" --> "€ 12.345,67"
          */
 
         let averageMontlySalary = entry.get_text ();
         if (averageMontlySalary.length == 0) {
             return;
         }
+
+        if (averageMontlySalary.includes(",") ){
+            // remove extra decimal digits (if any)
+            let comma_position = averageMontlySalary.indexOf (",");
+            averageMontlySalary = averageMontlySalary.slice (0, comma_position + 3)
+        };
+
         entry.set_text ("€ " + averageMontlySalary);
     }
 
