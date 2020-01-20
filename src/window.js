@@ -184,7 +184,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onMoneyEntryLostFocus (entry) {
         /* add "€ " to the text, remove extra decimal digits
-         * example: "12345,6794" --> "€ 12.345,67"
+         * example: "12.345,6789" --> "€ 12.345,67"
          */
 
         let averageMontlySalary = entry.get_text ();
