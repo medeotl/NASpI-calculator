@@ -150,20 +150,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
         if (key_val == Gdk.keyval_from_name ('BackSpace') ) {
-			let cursor_pos = entry.get_position ();
-			let value = entry.get_text ();
-			let char_to_be_deleted = value.charAt (cursor_pos - 1);
-			switch (char_to_be_deleted) {
-				case '.':
-					GObject.signal_stop_emission_by_name(entry, "key-press-event");
-					return;
-				case ',':
-					this._onMoneyEntryCommaDeleted (entry, 'BackSpace', value, cursor_pos);
-					return;
-				default:
-					this._onMoneyEntryDecrease (entry, 'BackSpace');
-					return;
-			}
+            let cursor_pos = entry.get_position ();
+            let value = entry.get_text ();
+            let char_to_be_deleted = value.charAt (cursor_pos - 1);
+            switch (char_to_be_deleted) {
+                case '.':
+                    GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                    return;
+                case ',':
+                    this._onMoneyEntryCommaDeleted (entry, 'BackSpace', value, cursor_pos);
+                    return;
+                default:
+                    this._onMoneyEntryDecrease (entry, 'BackSpace');
+                    return;
+            }
         }
 
         if (key_val == Gdk.keyval_from_name ('Delete') ) {
@@ -278,14 +278,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         var cursor_pos = entry.get_position ();
         switch (key_pressed) {
             case 'BackSpace':
-				// deleting a dot?
+                // deleting a dot?
                 if (averageMontlySalary.charAt (cursor_pos - 1) == '.') {
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 };
                 // deleting the comma?
                 if (averageMontlySalary.charAt (cursor_pos - 1) == ',') {
-					print ("@@@ ");
+                    print ("@@@ ");
                     // let's add decimal part to value
                     value = value + decimal;
                     decimal = undefined;
@@ -295,7 +295,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
                 break;
             case 'Delete':
-				// deleting a dot?
+                // deleting a dot?
                 if (averageMontlySalary.charAt (cursor_pos) == '.') {
                     // don't delete the dot, just move cursor right!
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
@@ -304,7 +304,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 };
                 // deleting the comma?
                 if (averageMontlySalary.charAt (cursor_pos) == ',') {
-					print ("@@@ ");
+                    print ("@@@ ");
                     // let's add decimal part to value
                     value = value + decimal;
                     decimal = undefined;
@@ -324,25 +324,25 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-	_onMoneyEntryCommaDeleted (entry, key_pressed, value, cursor_pos) {
+    _onMoneyEntryCommaDeleted (entry, key_pressed, value, cursor_pos) {
 
-		function update_cursor_position () {
-			if (new_value.indexOf ('.') == -1) {
-				entry.set_position (cursor_pos - 1);
-			} else {
-				entry.set_position (cursor_pos);
-			}
-		}
+        function update_cursor_position () {
+            if (new_value.indexOf ('.') == -1) {
+                entry.set_position (cursor_pos - 1);
+            } else {
+                entry.set_position (cursor_pos);
+            }
+        }
 
-		let new_value = value.replace (',', '');  // remove comma
-		new_value = new_value.replace (/\./g, ''); // remove extra dots
-		new_value = Util.add_dots (new_value);
-		entry.set_text (new_value);
+        let new_value = value.replace (',', '');  // remove comma
+        new_value = new_value.replace (/\./g, ''); // remove extra dots
+        new_value = Util.add_dots (new_value);
+        entry.set_text (new_value);
 
-		GObject.signal_stop_emission_by_name (entry, "key-press-event");
-		// move cursor accordingly
-		GLib.idle_add (200, update_cursor_position);
-	}
+        GObject.signal_stop_emission_by_name (entry, "key-press-event");
+        // move cursor accordingly
+        GLib.idle_add (200, update_cursor_position);
+    }
 
-	_onMoneyEntryCommaAdded () {}
+    _onMoneyEntryCommaAdded () {}
 });
