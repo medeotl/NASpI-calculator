@@ -278,19 +278,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         var cursor_pos = entry.get_position ();
         switch (key_pressed) {
             case 'BackSpace':
-                // deleting a dot?
-                if (averageMontlySalary.charAt (cursor_pos - 1) == '.') {
-                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
-                    return;
-                };
-                // deleting the comma?
-                if (averageMontlySalary.charAt (cursor_pos - 1) == ',') {
-                    print ("@@@ ");
-                    // let's add decimal part to value
-                    value = value + decimal;
-                    decimal = undefined;
-                    break;
-                };
                 // deleting a digit
                 value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
                 break;
