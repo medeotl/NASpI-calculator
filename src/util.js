@@ -76,7 +76,6 @@ function add_dots (value, new_value = "") {
      * 12132143432 --> 12.132.143.432
      */
     if (value.length < 4) {
-        //~ print (value + new_value);
         return (value + new_value);
     } else {
         new_value = "." + value.slice (-3) + new_value;

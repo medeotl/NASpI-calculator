@@ -23,8 +23,7 @@ const Util = imports.util;
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry',
-                       'effectEntry']
+    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
     _init (application) {
@@ -151,8 +150,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
         if (key_val == Gdk.keyval_from_name ('BackSpace') ) {
-            this._onMoneyEntryDecrease (entry, 'BackSpace');
-            return;
+			let cursor_pos = entry.get_position ();
+			let value = entry.get_text ();
+			let char_to_be_deleted = value.charAt (cursor_pos - 1);
+			switch (char_to_be_deleted) {
+				case '.':
+					GObject.signal_stop_emission_by_name(entry, "key-press-event");
+					return;
+				case ',':
+					this._onMoneyEntryCommaDeleted (entry, 'BackSpace', value, cursor_pos);
+					return;
+				default:
+					this._onMoneyEntryDecrease (entry, 'BackSpace');
+					return;
+			}
         }
 
         if (key_val == Gdk.keyval_from_name ('Delete') ) {
@@ -257,7 +268,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         function move_cursor_right () {
-            // used when pressing Canc with curson before a dot
+            // used when pressing Canc with cursor before a dot
             entry.set_position (cursor_pos + 1);
         }
 
@@ -267,20 +278,39 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         var cursor_pos = entry.get_position ();
         switch (key_pressed) {
             case 'BackSpace':
+				// deleting a dot?
                 if (averageMontlySalary.charAt (cursor_pos - 1) == '.') {
-                    // do not remove the dot!
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 };
+                // deleting the comma?
+                if (averageMontlySalary.charAt (cursor_pos - 1) == ',') {
+					print ("@@@ ");
+                    // let's add decimal part to value
+                    value = value + decimal;
+                    decimal = undefined;
+                    break;
+                };
+                // deleting a digit
                 value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
                 break;
             case 'Delete':
+				// deleting a dot?
                 if (averageMontlySalary.charAt (cursor_pos) == '.') {
-                    // do not remove the dot but move on the right
+                    // don't delete the dot, just move cursor right!
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     GLib.idle_add (200, move_cursor_right);
                     return;
                 };
+                // deleting the comma?
+                if (averageMontlySalary.charAt (cursor_pos) == ',') {
+					print ("@@@ ");
+                    // let's add decimal part to value
+                    value = value + decimal;
+                    decimal = undefined;
+                    break;
+                };
+                // deleting a digit
                 value = value.slice (0, cursor_pos) + value.slice (cursor_pos+1);
                 break;
         }
@@ -289,9 +319,30 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         if (new_value != value) {
             entry.set_text (new_value + decimal);
             GObject.signal_stop_emission_by_name (entry, "key-press-event");
-            // move cursor
+            // move cursor accordingly
             GLib.idle_add (200, update_cursor_position);
         }
     }
 
+	_onMoneyEntryCommaDeleted (entry, key_pressed, value, cursor_pos) {
+
+		function update_cursor_position () {
+			if (new_value.indexOf ('.') == -1) {
+				entry.set_position (cursor_pos - 1);
+			} else {
+				entry.set_position (cursor_pos);
+			}
+		}
+
+		let new_value = value.replace (',', '');  // remove comma
+		new_value = new_value.replace (/\./g, ''); // remove extra dots
+		new_value = Util.add_dots (new_value);
+		entry.set_text (new_value);
+
+		GObject.signal_stop_emission_by_name (entry, "key-press-event");
+		// move cursor accordingly
+		GLib.idle_add (200, update_cursor_position);
+	}
+
+	_onMoneyEntryCommaAdded () {}
 });
