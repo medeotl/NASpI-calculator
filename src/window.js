@@ -158,7 +158,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     GObject.signal_stop_emission_by_name(entry, "key-press-event");
                     return;
                 case ',':
-                    this._onMoneyEntryCommaDeleted (entry, 'BackSpace', value, cursor_pos);
+                    this._onMoneyEntryCommaDeleted (entry, value, cursor_pos);
                     return;
                 default:
                     this._onMoneyEntryDecrease (entry, 'BackSpace');
@@ -167,6 +167,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         if (key_val == Gdk.keyval_from_name ('Delete') ) {
+            let cursor_pos = entry.get_position ();
+            let value = entry.get_text ();
+            let char_to_be_deleted = value.charAt (cursor_pos);
+            switch (char_to_be_deleted) {
+                case '.':
+                    // TODO move cursor right
+                    return;
+                case ',':
+                    this._onMoneyEntryCommaDeleted (entry, value, cursor_pos + 1);
+                    return;
+                default:
+                    this._onMoneyEntryDecrease (entry, 'Delete');
+                    return;
+            }
             this._onMoneyEntryDecrease (entry, 'Delete');
             return;
         }
@@ -311,10 +325,10 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onMoneyEntryCommaDeleted (entry, key_pressed, value, cursor_pos) {
+    _onMoneyEntryCommaDeleted (entry, value, cursor_pos) {
 
         function update_cursor_position () {
-            if (new_value.indexOf ('.') == -1) {
+            if (new_value.length < value.length) {
                 entry.set_position (cursor_pos - 1);
             } else {
                 entry.set_position (cursor_pos);
