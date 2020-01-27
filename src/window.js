@@ -303,14 +303,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     GLib.idle_add (200, move_cursor_right);
                     return;
                 };
-                // deleting the comma?
-                if (averageMontlySalary.charAt (cursor_pos) == ',') {
-                    print ("@@@ ");
-                    // let's add decimal part to value
-                    value = value + decimal;
-                    decimal = undefined;
-                    break;
-                };
                 // deleting a digit
                 value = value.slice (0, cursor_pos) + value.slice (cursor_pos+1);
                 break;
