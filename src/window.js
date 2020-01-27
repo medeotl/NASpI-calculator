@@ -218,14 +218,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         if (comma_position != -1 && cursor_pos >= comma_position) {
             return; // I'm inserting decimal value
         }
-        let [value, decimal] = averageMontlySalary.split (",");
+        let [floor, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
 
 
-        value = value.slice (0, cursor_pos) + new_digit + value.slice (cursor_pos);
+        floor = floor.slice (0, cursor_pos) + new_digit + floor.slice (cursor_pos);
         decimal = (decimal == undefined) ? "" : "," + decimal;
-        var new_value = Util.add_dots (value.replace (/\./g, '') );
-        if (new_value != value) {
+        var new_value = Util.add_dots (floor.replace (/\./g, '') );
+        if (new_value != floor) {
             entry.set_text (new_value + decimal);
             GObject.signal_stop_emission_by_name (entry, "key-press-event");
             // move cursor
@@ -262,7 +262,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         let averageMontlySalary = entry.get_text ();
-        let [value, decimal] = averageMontlySalary.split (",");
+        let [floor, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
         var cursor_pos = entry.get_position ();
         switch (key_pressed) {
@@ -272,7 +272,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 };
-                value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
+                floor = floor.slice (0, cursor_pos-1) + floor.slice (cursor_pos);
                 break;
             case 'Delete':
                 if (averageMontlySalary.charAt (cursor_pos) == '.') {
@@ -281,12 +281,12 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     GLib.idle_add (200, move_cursor_right);
                     return;
                 };
-                value = value.slice (0, cursor_pos) + value.slice (cursor_pos+1);
+                floor = floor.slice (0, cursor_pos) + floor.slice (cursor_pos+1);
                 break;
         }
         decimal = (decimal == undefined) ? "" : "," + decimal;
-        var new_value = Util.add_dots (value.replace (/\./g, '') );
-        if (new_value != value) {
+        var new_value = Util.add_dots (floor.replace (/\./g, '') );
+        if (new_value != floor) {
             entry.set_text (new_value + decimal);
             GObject.signal_stop_emission_by_name (entry, "key-press-event");
             // move cursor
