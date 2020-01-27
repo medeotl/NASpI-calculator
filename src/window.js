@@ -128,6 +128,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * _onMoneyEntryDecrease if key_val is cancel or delete
          */
 
+		function move_cursor_right () {
+            // used when pressing Canc with cursor before a dot
+            entry.set_position (cursor_pos + 1);
+        }
+
         var key_val = event.get_keyval ()[1];
         if ( key_val >= Gdk.keyval_from_name ('0')
              &&
@@ -167,12 +172,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         if (key_val == Gdk.keyval_from_name ('Delete') ) {
-            let cursor_pos = entry.get_position ();
+            var cursor_pos = entry.get_position ();
             let value = entry.get_text ();
             let char_to_be_deleted = value.charAt (cursor_pos);
             switch (char_to_be_deleted) {
                 case '.':
-                    // TODO move cursor right
+					GObject.signal_stop_emission_by_name (entry, "key-press-event");
+                    GLib.idle_add (200, move_cursor_right);
                     return;
                 case ',':
                     this._onMoneyEntryCommaDeleted (entry, value, cursor_pos + 1);
@@ -281,11 +287,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
 
-        function move_cursor_right () {
-            // used when pressing Canc with cursor before a dot
-            entry.set_position (cursor_pos + 1);
-        }
-
         let averageMontlySalary = entry.get_text ();
         let [value, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
@@ -293,18 +294,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         switch (key_pressed) {
             case 'BackSpace':
                 // deleting a digit
-                value = value.slice (0, cursor_pos-1) + value.slice (cursor_pos);
+                value = value.slice (0, cursor_pos - 1) + value.slice (cursor_pos);
                 break;
             case 'Delete':
-                // deleting a dot?
-                if (averageMontlySalary.charAt (cursor_pos) == '.') {
-                    // don't delete the dot, just move cursor right!
-                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
-                    GLib.idle_add (200, move_cursor_right);
-                    return;
-                };
                 // deleting a digit
-                value = value.slice (0, cursor_pos) + value.slice (cursor_pos+1);
+                value = value.slice (0, cursor_pos) + value.slice (cursor_pos + 1);
                 break;
         }
         decimal = (decimal == undefined) ? "" : "," + decimal;
