@@ -126,6 +126,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * then call:
          * _onMoneyEntryIncrease if key_val is numeric
          * _onMoneyEntryDecrease if key_val is cancel or delete
+         * _onMoneyEntryCommaAdded if the first comma is inserted
+         * _onMoneyEntryCommaDeleted if comma is removed
          */
 
         function move_cursor_right () {
