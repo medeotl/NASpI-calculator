@@ -317,26 +317,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onMoneyEntryCommaDeleted (entry, value, cursor_pos) {
-
-        function update_cursor_position () {
-            if (new_value.length < value.length) {
-                entry.set_position (cursor_pos - 1);
-            } else {
-                entry.set_position (cursor_pos);
-            }
-        }
-
-        let new_value = value.replace (',', '');  // remove comma
-        new_value = new_value.replace (/\./g, ''); // remove extra dots
-        new_value = Util.add_dots (new_value);
-        entry.set_text (new_value);
-
-        GObject.signal_stop_emission_by_name (entry, "key-press-event");
-        // move cursor accordingly
-        GLib.idle_add (200, update_cursor_position);
-    }
-
     _onMoneyEntryCommaAdded (entry) {
 
         function update_cursor_position () {
@@ -363,4 +343,25 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         // move cursor accordingly
         GLib.idle_add (200, update_cursor_position);
     }
+
+    _onMoneyEntryCommaDeleted (entry, value, cursor_pos) {
+
+        function update_cursor_position () {
+            if (new_value.length < value.length) {
+                entry.set_position (cursor_pos - 1);
+            } else {
+                entry.set_position (cursor_pos);
+            }
+        }
+
+        let new_value = value.replace (',', '');  // remove comma
+        new_value = new_value.replace (/\./g, ''); // remove extra dots
+        new_value = Util.add_dots (new_value);
+        entry.set_text (new_value);
+
+        GObject.signal_stop_emission_by_name (entry, "key-press-event");
+        // move cursor accordingly
+        GLib.idle_add (200, update_cursor_position);
+    }
+
 });
