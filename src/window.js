@@ -128,7 +128,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          * _onMoneyEntryDecrease if key_val is cancel or delete
          */
 
-		function move_cursor_right () {
+        function move_cursor_right () {
             // used when pressing Canc with cursor before a dot
             entry.set_position (cursor_pos + 1);
         }
@@ -150,13 +150,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
         if (key_val == Gdk.keyval_from_name ('comma') ) {
             if (entry.get_text ().indexOf (',') != - 1) {
-				// there's alrealdy a comma
-				GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                // there's alrealdy a comma
+                GObject.signal_stop_emission_by_name(entry, "key-press-event");
                 return;
             } else {
-				this._onMoneyEntryCommaAdded (entry);
-				return;
-			}
+                this._onMoneyEntryCommaAdded (entry);
+                return;
+            }
         }
         if (key_val == Gdk.keyval_from_name ('BackSpace') ) {
             let cursor_pos = entry.get_position ();
@@ -181,7 +181,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let char_to_be_deleted = value.charAt (cursor_pos);
             switch (char_to_be_deleted) {
                 case '.':
-					GObject.signal_stop_emission_by_name (entry, "key-press-event");
+                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     GLib.idle_add (200, move_cursor_right);
                     return;
                 case ',':
@@ -337,7 +337,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onMoneyEntryCommaAdded (entry) {
 
-		 function update_cursor_position () {
+        function update_cursor_position () {
             if (new_value.length > value.length) {
                 entry.set_position (cursor_pos + 1);
             } else {
@@ -345,20 +345,20 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
 
-		let value = entry.get_text ();
-		let cursor_pos = entry.get_position ();
-		if (cursor_pos == value.length) {
-			// usual entry behaviour is ok, nothing to do
-			return;
-		}
-		let floor = value.slice (0, cursor_pos).replace (/\./g, '');
-		let decimal = value.slice (cursor_pos).replace (/\./g, '');
-		let dotted_floor = Util.add_dots (floor);
-		let new_value = dotted_floor + "," + decimal;
-		entry.set_text (new_value);
+        let value = entry.get_text ();
+        let cursor_pos = entry.get_position ();
+        if (cursor_pos == value.length) {
+            // usual entry behaviour is ok, nothing to do
+            return;
+        }
+        let floor = value.slice (0, cursor_pos).replace (/\./g, '');
+        let decimal = value.slice (cursor_pos).replace (/\./g, '');
+        let dotted_floor = Util.add_dots (floor);
+        let new_value = dotted_floor + "," + decimal;
+        entry.set_text (new_value);
 
-		GObject.signal_stop_emission_by_name (entry, "key-press-event");
-		// move cursor accordingly
+        GObject.signal_stop_emission_by_name (entry, "key-press-event");
+        // move cursor accordingly
         GLib.idle_add (200, update_cursor_position);
-	}
+    }
 });
