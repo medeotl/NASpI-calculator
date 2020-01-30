@@ -136,19 +136,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         var key_val = event.get_keyval ()[1];
-        if ( key_val >= Gdk.keyval_from_name ('0')
-             &&
-             key_val <= Gdk.keyval_from_name ('9') ) {
-                // numeric value always accepted
-                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val) );
-                return;
-        }
-        if ( key_val >= Gdk.keyval_from_name ('KP_0')
-             &&
-             key_val <= Gdk.keyval_from_name ('KP_9') ) {
-                // keypad numeric value always accepted
-                this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val).slice(-1));
-                return;
+        if ((key_val >= 48 && key_val <= 57) || (key_val >= 65456 && key_val <= 65465)) {
+            // key pressed is 0..9 or KP0..KP9
+            // numeric value always accepted
+            this._onMoneyEntryIncrease (entry, Gdk.keyval_name (key_val).slice(-1));
+            return;
         }
         if (key_val == Gdk.keyval_from_name ('comma') ) {
             if (entry.get_text ().indexOf (',') != - 1) {
