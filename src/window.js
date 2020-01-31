@@ -46,7 +46,10 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _checkInsertedChars (entry, new_text) {
         /* limit chars to digits or / */
-        // TODO handle also pasted text?
+
+        if (isNaN (new_text.replace (/\//g, '') ) ) {
+            GObject.signal_stop_emission_by_name(entry, "insert-text");
+        }
     }
 
     _onDateEntryLostFocus (entry) {
@@ -120,6 +123,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _checkNumeric (entry, new_text) {
         /* allow insertion of numeric only valuse */
+
         if (isNaN (new_text) ) {
             // non passa lo straniero
             GObject.signal_stop_emission_by_name(entry, "insert-text");
@@ -237,6 +241,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onMoneyEntryIncrease (entry, new_digit) {
         /* Add new digit, put dots accordingly and move cursor */
+
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
             if (entry.get_text ().charAt (1) == '.') {
@@ -267,6 +272,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onMoneyEntryDecrease (entry, averageMontlySalary, cursor_pos) {
         /* Remove the digit, put dots accordingly and move cursor */
+
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
             let value = entry.get_text ();
