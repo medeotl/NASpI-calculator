@@ -164,7 +164,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     this._onMoneyEntryCommaDeleted (entry, value, cursor_pos);
                     return;
                 default:
-                    this._onMoneyEntryDecrease (entry, 'BackSpace');
+                    this._onMoneyEntryDecrease (entry, cursor_pos);
                     return;
             }
         }
@@ -179,10 +179,12 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     GLib.idle_add (200, move_cursor_right);
                     return;
                 case ',':
+                    // cursor position + 1 to "simulate" a backspace
                     this._onMoneyEntryCommaDeleted (entry, value, cursor_pos + 1);
                     return;
                 default:
-                    this._onMoneyEntryDecrease (entry, 'Delete');
+                    // cursor position + 1 to "simulate" a backspace
+                    this._onMoneyEntryDecrease (entry, cursor_pos + 1);
                     return;
             }
         }
@@ -260,43 +262,22 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onMoneyEntryDecrease (entry, key_pressed) {
+    _onMoneyEntryDecrease (entry, cursor_pos) {
         /* Remove the digit, put dots accordingly and move cursor */
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
             let value = entry.get_text ();
-            switch (key_pressed) {
-                case 'Delete':
-                    if ( (value.charAt (3) == '.') || (value.length == 3) ) {
-                        entry.set_position (cursor_pos - 1);
-                    } else {
-                        entry.set_position (cursor_pos);
-                    }
-                    break;
-                case 'BackSpace' :
-                    if ( (value.charAt(3) == '.') || (value.length == 3) ) {
-                        entry.set_position (cursor_pos - 2);
-                    } else {
-                        entry.set_position (cursor_pos - 1);
-                    }
-                    break;
+            if ( (value.charAt(3) == '.') || (value.length == 3) ) {
+                entry.set_position (cursor_pos - 2);
+            } else {
+                entry.set_position (cursor_pos - 1);
             }
         }
 
         let averageMontlySalary = entry.get_text ();
         let [floor, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
-        var cursor_pos = entry.get_position ();
-        switch (key_pressed) {
-            case 'BackSpace':
-                // deleting a digit
-                floor = floor.slice (0, cursor_pos - 1) + floor.slice (cursor_pos);
-                break;
-            case 'Delete':
-                // deleting a digit
-                floor = floor.slice (0, cursor_pos) + floor.slice (cursor_pos + 1);
-                break;
-        }
+        floor = floor.slice (0, cursor_pos - 1) + floor.slice (cursor_pos);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (floor.replace (/\./g, '') );
         if (new_value != floor) {
