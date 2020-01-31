@@ -164,7 +164,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     this._onMoneyEntryCommaDeleted (entry, value, cursor_pos);
                     return;
                 default:
-                    this._onMoneyEntryDecrease (entry, cursor_pos);
+                    this._onMoneyEntryDecrease (entry, value, cursor_pos);
                     return;
             }
         }
@@ -184,7 +184,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     return;
                 default:
                     // cursor position + 1 to "simulate" a backspace
-                    this._onMoneyEntryDecrease (entry, cursor_pos + 1);
+                    this._onMoneyEntryDecrease (entry, value, cursor_pos + 1);
                     return;
             }
         }
@@ -249,8 +249,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
         let [floor, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
-
-
         floor = floor.slice (0, cursor_pos) + new_digit + floor.slice (cursor_pos);
         decimal = (decimal == undefined) ? "" : "," + decimal;
         var new_value = Util.add_dots (floor.replace (/\./g, '') );
@@ -262,7 +260,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onMoneyEntryDecrease (entry, cursor_pos) {
+    _onMoneyEntryDecrease (entry, averageMontlySalary, cursor_pos) {
         /* Remove the digit, put dots accordingly and move cursor */
         function update_cursor_position () {
             // used because GLib.idle_add doesn't accept function parameters
@@ -274,7 +272,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
         }
 
-        let averageMontlySalary = entry.get_text ();
         let [floor, decimal] = averageMontlySalary.split (",");
         // create new value accordingly to cursor position
         floor = floor.slice (0, cursor_pos - 1) + floor.slice (cursor_pos);
