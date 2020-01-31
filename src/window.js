@@ -44,6 +44,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         context.remove_class ("wrong-date");
     }
 
+    _checkInsertedChars (entry, new_text) {
+        /* limit chars to digits or / */
+        // TODO handle also pasted text?
+    }
+
     _onDateEntryLostFocus (entry) {
         /* validate date and format it as DD/MM/YYYY
          * - if date is valid remove wrong-date style

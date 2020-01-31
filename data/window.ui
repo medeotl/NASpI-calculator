@@ -67,6 +67,7 @@
                         <property name="max_length">10</property>
                         <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
+                        <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -109,6 +110,7 @@
                         <property name="max_length">10</property>
                         <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
+                        <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -179,6 +181,7 @@
                         <property name="max_length">10</property>
                         <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                         <signal name="focus-out-event" handler="_onSubmissionEntryLostFocus" swapped="no"/>
+                        <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
