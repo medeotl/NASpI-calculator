@@ -185,8 +185,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     this._onMoneyEntryDecrease (entry, 'Delete');
                     return;
             }
-            this._onMoneyEntryDecrease (entry, 'Delete');
-            return;
         }
 
         if (key_val == Gdk.keyval_from_name ('Right')
