@@ -303,6 +303,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onMoneyEntryCommaAdded (entry) {
+        /* add the comma and reformat the value in the entry */
 
         function update_cursor_position () {
             if (new_value.length > value.length) {
@@ -330,6 +331,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onMoneyEntryCommaDeleted (entry, value, cursor_pos) {
+        /* remove the comma and reformat the value in the entry */
 
         function update_cursor_position () {
             if (new_value.length < value.length) {
