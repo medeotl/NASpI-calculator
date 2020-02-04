@@ -44,11 +44,18 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         context.remove_class ("wrong-date");
     }
 
-    _checkInsertedChars (entry, new_text) {
+    _checkInsertedChars (entry, new_text, length) {
         /* limit chars to digits or / */
 
-        if (isNaN (new_text.replace (/\//g, '') ) ) {
-            GObject.signal_stop_emission_by_name(entry, "insert-text");
+        if (length == 1 ) { // trying to inserting a non numeric char
+            if (isNaN (new_text) ) {
+                GObject.signal_stop_emission_by_name (entry, "insert-text");
+            }
+        } else { // getting a paste event
+            if (isNaN (new_text.replace (/\//g, '') ) ) {
+                GObject.signal_stop_emission_by_name (entry, "insert-text");
+                print ("@@@ in-app notification here: ", new_text);
+            }
         }
     }
 
