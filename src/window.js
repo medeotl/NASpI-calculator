@@ -132,7 +132,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* allow insertion of numeric only valuse */
 
         if (isNaN (new_text) ) {
-            // non passa lo straniero
             GObject.signal_stop_emission_by_name(entry, "insert-text");
         }
     }
