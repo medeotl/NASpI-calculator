@@ -393,6 +393,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">center</property>
+                <signal name="clicked" handler="_onBtnCalcolaClicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -433,7 +434,7 @@
           </packing>
         </child>
         <child type="overlay">
-          <object class="GtkRevealer">
+          <object class="GtkRevealer" id="revealer">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -447,7 +448,8 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Messaggio di errore</property>
+                    <property name="label" translatable="yes">Stai provando a incollare un valore non corretto: </property>
+                    <property name="wrap">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -460,6 +462,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="_onBtnCloseClicked" swapped="no"/>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>

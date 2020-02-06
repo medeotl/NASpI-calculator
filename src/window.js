@@ -23,7 +23,8 @@ const Util = imports.util;
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry']
+    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry',
+                       'revealer']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
     _init (application) {
@@ -348,6 +349,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GObject.signal_stop_emission_by_name (entry, "key-press-event");
         // move cursor accordingly
         GLib.idle_add (200, update_cursor_position);
+    }
+
+    _onBtnCalcolaClicked (button) {
+        this._revealer.set_reveal_child (true);
+    }
+
+    _onBtnCloseClicked (button) {
+        this._revealer.set_reveal_child (false);
     }
 
 });
