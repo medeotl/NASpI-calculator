@@ -356,6 +356,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onBtnCloseClicked (button) {
+        /* remove in-app notification */
+
         this._revealer.set_reveal_child (false);
     }
 
