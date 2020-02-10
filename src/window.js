@@ -23,7 +23,9 @@ const Util = imports.util;
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry']
+    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry',
+                       'daysEntry',
+                       'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
     _init (application) {
@@ -54,7 +56,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         } else { // getting a paste event
             if (isNaN (new_text.replace (/\//g, '') ) ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
-                print ("@@@ in-app notification here: ", new_text);
+                let error_msg = "Stai provando a incollare un valore non corretto: "
+                                + new_text;
+                this._lbl_inapp_error.set_text (error_msg);
+                this._revealer.set_reveal_child (true);
+                print ("@@@ in-app notification here:", new_text);
             }
         }
     }
@@ -218,6 +224,19 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GObject.signal_stop_emission_by_name(entry, "key-press-event");
     }
 
+    _checkAcknowledgedDays (entry) {
+        /* check if days are over 4 years (730 days) */
+
+        if (entry.get_text () > 730 ) {
+            this._setWrongDateStyle (entry);
+            entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, 'dialog-warning');
+        } else {
+            this._removeWrondDateStyle (entry);
+            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+        }
+    }
+
     _onMoneyEntryGetFocus (entry) {
         /* remove "€ " to make user focus in inserting numeric values */
 
@@ -349,6 +368,12 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GObject.signal_stop_emission_by_name (entry, "key-press-event");
         // move cursor accordingly
         GLib.idle_add (200, update_cursor_position);
+    }
+
+    _onBtnCloseClicked (button) {
+        /* remove in-app notification */
+
+        this._revealer.set_reveal_child (false);
     }
 
 });
