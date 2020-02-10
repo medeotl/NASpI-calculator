@@ -47,7 +47,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkInsertedChars (entry, new_text, length) {
-        /* limit chars to digits or / */
+        /* limit date chars to digits or / */
 
         if (length == 1 ) { // trying to inserting a non numeric char
             if (isNaN (+new_text) && new_text != '/' ) {
