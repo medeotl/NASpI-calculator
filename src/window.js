@@ -24,6 +24,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
     InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry',
+                       'daysEntry',
                        'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
@@ -227,11 +228,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _checkAcknowledgedDays (entry) {
         /* check if days are over 4 years (730 days) */
 
-        acknowledged_days = entry.get_text ();
-        if (entry.get_text () ) > 730 {
-            // aggiungi style "wrong-entry"
-            // aggiungi simbolo di errore
-            // aggiungi tooltip esplicativo al simbolo di errore
+        if (entry.get_text () > 730 ) {
+            this._setWrongDateStyle (entry);
+            entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, 'dialog-warning');
+        } else {
+            this._removeWrondDateStyle (entry);
+            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
         }
     }
 

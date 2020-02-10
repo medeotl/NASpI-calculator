@@ -318,10 +318,11 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkEntry">
+                          <object class="GtkEntry" id="daysEntry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">3</property>
+                            <property name="secondary_icon_tooltip_text" translatable="yes">I giorni riconosciuti non possono essere superiori a 730 (2 anni)</property>
                             <property name="placeholder_text" translatable="yes">123</property>
                             <signal name="focus-out-event" handler="_checkAcknowledgedDays" swapped="no"/>
                             <signal name="insert-text" handler="_checkNumeric" swapped="no"/>
