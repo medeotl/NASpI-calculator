@@ -323,6 +323,7 @@
                             <property name="can_focus">True</property>
                             <property name="max_length">3</property>
                             <property name="placeholder_text" translatable="yes">123</property>
+                            <signal name="focus-out-event" handler="_checkAcknowledgedDays" swapped="no"/>
                             <signal name="insert-text" handler="_checkNumeric" swapped="no"/>
                           </object>
                           <packing>

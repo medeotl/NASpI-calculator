@@ -224,6 +224,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GObject.signal_stop_emission_by_name(entry, "key-press-event");
     }
 
+    _checkAcknowledgedDays (entry) {
+        /* check if days are over 4 years (730 days) */
+
+        acknowledged_days = entry.get_text ();
+        if (entry.get_text () ) > 730 {
+            // aggiungi style "wrong-entry"
+            // aggiungi simbolo di errore
+            // aggiungi tooltip esplicativo al simbolo di errore
+        }
+    }
+
     _onMoneyEntryGetFocus (entry) {
         /* remove "€ " to make user focus in inserting numeric values */
 
