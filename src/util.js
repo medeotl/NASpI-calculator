@@ -58,6 +58,7 @@ function formatDate (date) {
 
 function isDateValid (date) {
     /* validate a date formatted as DD/MM/YYYY */
+
     if (date == -1) {
         return false;
     }
@@ -75,6 +76,7 @@ function add_dots (value, new_value = "") {
     /* recursively add dots to numeric value:
      * 12132143432 --> 12.132.143.432
      */
+
     if (value.length < 4) {
         return (value + new_value);
     } else {
@@ -85,6 +87,7 @@ function add_dots (value, new_value = "") {
 }
 
 function test () {
+    /* test date validation */
 
     add_dots ("1234567");
 

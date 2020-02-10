@@ -79,6 +79,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
 
         let formattedDate = Util.formatDate (date);
+        print ("@@@ data formattata: ", formattedDate);
         if (Util.isDateValid (formattedDate)) {
             // remove wrong date style (if any)
             this._removeWrondDateStyle (entry);
