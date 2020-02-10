@@ -48,8 +48,14 @@ function formatDate (date) {
             return -1;
     }
 
-    if (YY.length == 2) {
-        YY = '20' + YY;
+    switch (YY.length) {
+        case 2:
+            YY = '20' + YY;
+            break;
+        case 4:
+            break;
+        default: // YY.length = 1, 3, >4
+            return -1;
     }
 
     return (DD + "/" + MM + "/" + YY);
