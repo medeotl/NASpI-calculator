@@ -50,7 +50,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* limit chars to digits or / */
 
         if (length == 1 ) { // trying to inserting a non numeric char
-            if (isNaN (new_text) && new_text != '/' ) {
+            if (isNaN (+new_text) && new_text != '/' ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
             }
         } else { // getting a paste event
