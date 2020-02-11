@@ -60,7 +60,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                                 + new_text;
                 this._lbl_inapp_error.set_text (error_msg);
                 this._revealer.set_reveal_child (true);
-                print ("@@@ in-app notification here:", new_text);
             }
         }
     }
@@ -75,11 +74,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         if (date.length == 0) {
             print ("Do nothing (empty entry)");
+            this._removeWrondDateStyle (entry);
             return 0;  // empty string
         }
 
         let formattedDate = Util.formatDate (date);
-        print ("@@@ data formattata: ", formattedDate);
         if (Util.isDateValid (formattedDate)) {
             // remove wrong date style (if any)
             this._removeWrondDateStyle (entry);
