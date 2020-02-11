@@ -65,9 +65,10 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onDateEntryLostFocus (entry) {
-        /* validate date and format it as DD/MM/YYYY
-         * - if date is valid remove wrong-date style
-         * - else add wrong-date style
+        /* format date as DD/MM/YYYY and validate it
+         * - if date is valid remove wrong-date style and return date
+         * - else add wrong-date style and return -1
+         * - if date is empty return 0
          */
 
         let date = entry.get_text ();
