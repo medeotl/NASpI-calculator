@@ -386,4 +386,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         this._revealer.set_reveal_child (false);
     }
 
+    _onBtnCalcolaClicked (button) {
+        /* check entries correctness and make calculations */
+
+        // check values
+        // make calculation
+    }
+
 });
