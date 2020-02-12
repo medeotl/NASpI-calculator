@@ -98,9 +98,18 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          */
 
         let formattedDate = this._onDateEntryLostFocus (entry);
-        if (isNaN (formattedDate)) {
-            this._effectEntry.set_text (formattedDate);
-            this._nextDayBtn.set_sensitive (true);
+        switch (formattedDate)
+        {
+            case 0:  // empty string
+            case -1:  // wrong date
+                this._effectEntry.set_text ("");
+                this._prevDayBtn.set_sensitive (false);
+                this._nextDayBtn.set_sensitive (false);
+                break;
+            default: // date is correct
+                this._effectEntry.set_text (formattedDate);
+                this._prevDayBtn.set_sensitive (false);
+                this._nextDayBtn.set_sensitive (true);
         }
     }
 
