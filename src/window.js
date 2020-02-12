@@ -32,7 +32,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         super._init ({ application });
     }
 
-    _setWrongDateStyle (entry) {
+    _addWrongDateStyle (entry) {
         /* style entry in red */
 
         let context = entry.get_style_context ();
@@ -87,7 +87,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             entry.set_text (formattedDate);
             return formattedDate;  // valid date
         } else {
-            this._setWrongDateStyle (entry);
+            this._addWrongDateStyle (entry);
             return -1;  // invalid date
         }
     }
@@ -238,7 +238,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* check if days are over 4 years (730 days) */
 
         if (entry.get_text () > 730 ) {
-            this._setWrongDateStyle (entry);
+            this._addWrongDateStyle (entry);
             entry.set_icon_from_icon_name(
                 Gtk.EntryIconPosition.SECONDARY, 'dialog-warning');
         } else {
