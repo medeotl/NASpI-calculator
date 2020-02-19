@@ -19,6 +19,7 @@
 const { GObject, Gtk, Gdk, GLib } = imports.gi;
 const Mainloop = imports.mainloop;
 const Util = imports.util;
+var is_value_valid = [false, false, false, false, false];
 
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
@@ -72,10 +73,23 @@ var NaspiCalculatorWindow = GObject.registerClass ({
          */
 
         let date = entry.get_text ();
+        switch (entry.get_name () ) {
+            case "hiredEntry":
+                var current_entry = 0;
+                break;
+            case "firedEntry":
+                var current_entry = 1;
+                break;
+            case "submissionEntry":
+                var current_entry = 2;
+        }
 
         if (date.length == 0) {
             print ("Do nothing (empty entry)");
             this._removeWrondDateStyle (entry);
+            // set validation mask for the entry accordingly
+            is_value_valid[current_entry] = false;
+            print ("\n@@@ ", is_value_valid);
             return 0;  // empty string
         }
 
@@ -83,11 +97,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         if (Util.isDateValid (formattedDate)) {
             // remove wrong date style (if any)
             this._removeWrondDateStyle (entry);
+            // set validation mask for the entry accordingly
+            is_value_valid[current_entry] = true;
             // write date in entry
             entry.set_text (formattedDate);
+            print ("\n@@@ ", is_value_valid);
             return formattedDate;  // valid date
         } else {
             this._addWrongDateStyle (entry);
+            // set validation mask for the entry accordingly
+            is_value_valid[current_entry] = false;
+            print ("\n@@@ ", is_value_valid);
             return -1;  // invalid date
         }
     }
@@ -390,6 +410,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* check entries correctness and make calculations */
 
         // check values
+
         // make calculation
     }
 
