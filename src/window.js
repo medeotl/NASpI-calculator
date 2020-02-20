@@ -258,12 +258,18 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* check if days are over 4 years (730 days) */
 
         if (entry.get_text () > 730 ) {
+            // wrong value
             this._addWrongDateStyle (entry);
-            entry.set_icon_from_icon_name(
-                Gtk.EntryIconPosition.SECONDARY, 'dialog-warning');
+            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                           'dialog-warning');
+            is_value_valid[3] = false;
+            print ("\n@@@ ", is_value_valid);
         } else {
+            // good value
             this._removeWrondDateStyle (entry);
             entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+            is_value_valid[3] = true;
+            print ("\n@@@ ", is_value_valid);
         }
     }
 
@@ -282,15 +288,18 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         let averageMontlySalary = entry.get_text ();
         if (averageMontlySalary.length == 0) {
+            is_value_valid[4] = false;
+            print ("\n@@@ ", is_value_valid);
             return;
         }
 
-        if (averageMontlySalary.includes(",") ){
+        if (averageMontlySalary.includes(",") ) {
             // remove extra decimal digits (if any)
             let comma_position = averageMontlySalary.indexOf (",");
             averageMontlySalary = averageMontlySalary.slice (0, comma_position + 3)
-        };
-
+        }
+        is_value_valid[4] = true;
+        print ("\n@@@ ", is_value_valid);
         entry.set_text ("€ " + averageMontlySalary);
     }
 
