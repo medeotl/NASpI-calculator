@@ -33,18 +33,25 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         super._init ({ application });
     }
 
-    _addWrongDateStyle (entry) {
-        /* style entry in red */
+    _set_validation (entry, entry_id, type) {
+        /* set validation mask for the entry and add/remove wrong entry style */
 
         let context = entry.get_style_context ();
-        context.add_class ("wrong-date");
-    }
-
-    _removeWrondDateStyle (entry) {
-        /* remove red style */
-
-        let context = entry.get_style_context ();
-        context.remove_class ("wrong-date");
+        switch (type)
+        {
+            case "good":
+                context.remove_class ("wrong-date");
+                is_entry_value_valid[entry_id] = true;
+                break;
+            case "wrong":
+                context.add_class ("wrong-date");
+                is_entry_value_valid[entry_id] = false;
+                break;
+            case "empty":
+                context.remove_class ("wrong-date");
+                is_entry_value_valid[entry_id] = false;
+        }
+        print ("\n@@@ ", is_entry_value_valid);
     }
 
     _checkInsertedChars (entry, new_text, length) {
@@ -75,39 +82,30 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let date = entry.get_text ();
         switch (entry.get_name () ) {
             case "hiredEntry":
-                var current_entry = 0;
+                var entry_id = 0;
                 break;
             case "firedEntry":
-                var current_entry = 1;
+                var entry_id = 1;
                 break;
             case "submissionEntry":
-                var current_entry = 2;
+                var entry_id = 2;
         }
 
         if (date.length == 0) {
             print ("Do nothing (empty entry)");
-            this._removeWrondDateStyle (entry);
-            // set validation mask for the entry accordingly
-            is_entry_value_valid[current_entry] = false;
-            print ("\n@@@ ", is_entry_value_valid);
+            this._set_validation (entry, entry_id, "empty");
             return 0;  // empty string
         }
 
         let formattedDate = Util.formatDate (date);
         if (Util.isDateValid (formattedDate)) {
-            // remove wrong date style (if any)
-            this._removeWrondDateStyle (entry);
-            // set validation mask for the entry accordingly
-            is_entry_value_valid[current_entry] = true;
-            // write date in entry
+            // date is valid
+            this._set_validation (entry, entry_id, "good");
             entry.set_text (formattedDate);
-            print ("\n@@@ ", is_entry_value_valid);
-            return formattedDate;  // valid date
+            return formattedDate;
         } else {
-            this._addWrongDateStyle (entry);
-            // set validation mask for the entry accordingly
-            is_entry_value_valid[current_entry] = false;
-            print ("\n@@@ ", is_entry_value_valid);
+            // date is unvalid
+            this._set_validation (entry, entry_id, "wrong");
             return -1;  // invalid date
         }
     }
@@ -257,19 +255,19 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _checkAcknowledgedDays (entry) {
         /* check if days are over 4 years (730 days) */
 
-        if (entry.get_text () > 730 ) {
+        let value = entry.get_text ();
+        if (value == "") {
+            // empty value
+            this._set_validation (entry, 3, "empty")
+        } else if (value <= 730 ) {
+            // good value
+            this._set_validation (entry, 3, "good")
+            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+        } else {
             // wrong value
-            this._addWrongDateStyle (entry);
+            this._set_validation (entry, 3, "wrong");
             entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
                                            'dialog-warning');
-            is_entry_value_valid[3] = false;
-            print ("\n@@@ ", is_entry_value_valid);
-        } else {
-            // good value
-            this._removeWrondDateStyle (entry);
-            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
-            is_entry_value_valid[3] = true;
-            print ("\n@@@ ", is_entry_value_valid);
         }
     }
 
@@ -288,6 +286,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         let averageMontlySalary = entry.get_text ();
         if (averageMontlySalary.length == 0) {
+            // empty value
             is_entry_value_valid[4] = false;
             print ("\n@@@ ", is_entry_value_valid);
             return;
