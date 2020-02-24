@@ -26,7 +26,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
     InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry',
                        'daysEntry',
-                       'revealer', 'lbl_inapp_error']
+                       'revealer', 'lbl_inapp_error',
+                       'btnCalcola']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
     _init (application) {
@@ -50,6 +51,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             case "empty":
                 context.remove_class ("wrong-date");
                 is_entry_value_valid[entry_id] = false;
+        }
+        if (is_entry_value_valid == "true,true,true,true,true") {
+            this._btnCalcola.set_sensitive (true);
+        } else {
+            this._btnCalcola.set_sensitive (false);
         }
         print ("\n@@@ ", is_entry_value_valid);
     }
@@ -287,8 +293,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let averageMontlySalary = entry.get_text ();
         if (averageMontlySalary.length == 0) {
             // empty value
-            is_entry_value_valid[4] = false;
-            print ("\n@@@ ", is_entry_value_valid);
+            this._set_validation (entry, 4, "empty")
             return;
         }
 
@@ -297,8 +302,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let comma_position = averageMontlySalary.indexOf (",");
             averageMontlySalary = averageMontlySalary.slice (0, comma_position + 3)
         }
-        is_entry_value_valid[4] = true;
-        print ("\n@@@ ", is_entry_value_valid);
+        this._set_validation (entry, 4, "good")
         entry.set_text ("€ " + averageMontlySalary);
     }
 
