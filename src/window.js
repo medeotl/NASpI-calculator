@@ -41,15 +41,15 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         switch (type)
         {
             case "good":
-                context.remove_class ("wrong-date");
+                context.remove_class ("wrong-value");
                 is_entry_value_valid[entry_id] = true;
                 break;
             case "wrong":
-                context.add_class ("wrong-date");
+                context.add_class ("wrong-value");
                 is_entry_value_valid[entry_id] = false;
                 break;
             case "empty":
-                context.remove_class ("wrong-date");
+                context.remove_class ("wrong-value");
                 is_entry_value_valid[entry_id] = false;
         }
         if (is_entry_value_valid == "true,true,true,true,true") {
@@ -80,8 +80,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onDateEntryLostFocus (entry) {
         /* format date as DD/MM/YYYY and validate it
-         * - if date is valid remove wrong-date style and return date
-         * - else add wrong-date style and return -1
+         * - if date is valid remove wrong-value style and return date
+         * - else add wrong-value style and return -1
          * - if date is empty return 0
          */
 
