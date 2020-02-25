@@ -24,10 +24,11 @@ var is_entry_value_valid = [false, false, false, false, false];
 var NaspiCalculatorWindow = GObject.registerClass ({
     GTypeName: 'NaspiCalculatorWindow',
     Template: 'resource:///com/github/medeotl/NASpI-Calculator/window.ui',
-    InternalChildren: ['prevDayBtn', 'nextDayBtn', 'submissionEntry', 'effectEntry',
-                       'daysEntry',
-                       'revealer', 'lbl_inapp_error',
-                       'btnCalcola']
+    InternalChildren: ['hiredEntry', 'firedEntry', 'submissionEntry',
+                       'prevDayBtn', 'effectEntry', 'nextDayBtn',
+                       'daysEntry', 'moneyEntry',
+                       'btnCalcola',
+                       'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
     _init (application) {
