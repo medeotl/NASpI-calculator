@@ -69,8 +69,9 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">10</property>
+                            <property name="secondary_icon_tooltip_text" translatable="yes">la data d'assunzione dev'essere precedente alla data di licenziamento</property>
                             <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
-                            <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
+                            <signal name="focus-out-event" handler="_onHiredEntryLostFocus" swapped="no"/>
                             <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
                           </object>
                           <packing>
@@ -112,8 +113,9 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">10</property>
+                            <property name="secondary_icon_tooltip_text" translatable="yes">la data di licenziamento dev'essere successiva alla data di assunzione</property>
                             <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
-                            <signal name="focus-out-event" handler="_onDateEntryLostFocus" swapped="no"/>
+                            <signal name="focus-out-event" handler="_onFiredEntryLostFocus" swapped="no"/>
                             <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
                           </object>
                           <packing>

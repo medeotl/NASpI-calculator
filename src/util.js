@@ -78,6 +78,19 @@ function isDateValid (date) {
     }
 }
 
+function dateEng (dateIta) {
+    /* return a date in english format (MM/DD/YY), the one used by new Date(String) */
+
+    let [DD, MM, YY] = dateIta.split ("/");
+    return (MM + "/" + DD + "/" + YY);
+}
+
+function datesAreConsitancy (first_date, second_date) {
+    /* check if first date is preceding second date */
+
+
+}
+
 function add_dots (value, new_value = "") {
     /* recursively add dots to numeric value:
      * 12132143432 --> 12.132.143.432
