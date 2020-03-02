@@ -93,62 +93,36 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onDateEntryLostFocus (entry) {
-        /* format date as DD/MM/YYYY and validate it
-         * - if date is valid remove wrong-value style and return date
-         * - else add wrong-value style and return -1
-         * - if date is empty return 0
-         */
-
-        let date = entry.get_text ();
-        switch (entry.get_name () ) {
-            case "hiredEntry":
-                var entry_id = 0;
-                break;
-            case "firedEntry":
-                var entry_id = 1;
-                break;
-            case "submissionEntry":
-                var entry_id = 2;
-        }
-
-        if (date.length == 0) {
-            print ("Do nothing (empty entry)");
-            this._set_validation (entry, entry_id, "empty");
-            return 0;  // empty string
-        }
-
-        let formattedDate = Util.formatDate (date);
-        if (Util.isDateValid (formattedDate)) {
-            // date is valid
-            this._set_validation (entry, entry_id, "good");
-            entry.set_text (formattedDate);
-            return formattedDate;
-        } else {
-            // date is unvalid
-            this._set_validation (entry, entry_id, "wrong");
-            return -1;  // invalid date
-        }
-    }
-
     _onSubmissionEntryLostFocus (entry) {
         /* validate date of submission entry (data presentazione)
          * if date valid, copy it to effect entry (decorrenza)
          */
 
-        let formattedDate = this._onDateEntryLostFocus (entry);
-        switch (formattedDate)
-        {
-            case 0:  // empty string
-            case -1:  // wrong date
-                this._effectEntry.set_text ("");
-                this._prevDayBtn.set_sensitive (false);
-                this._nextDayBtn.set_sensitive (false);
-                break;
-            default: // date is correct
-                this._effectEntry.set_text (formattedDate);
-                this._prevDayBtn.set_sensitive (false);
-                this._nextDayBtn.set_sensitive (true);
+        let entry_text = entry.get_text ();
+
+        if (entry_text.length == 0) {
+            print ("Do nothing (empty entry)");
+            this._set_validation (entry, 2, "empty");
+            this._effectEntry.set_text ("");
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (false);
+            return;  // empty string
+        }
+
+        let submissionDate = Util.formatDate (entry_text);
+        if (Util.isDateValid (submissionDate) ) {
+            // date is valid
+            this._set_validation (entry, 2, "good");
+            entry.set_text (submissionDate);
+            this._effectEntry.set_text (submissionDate);
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (true);
+        } else {
+            // date is unvalid
+            this._set_validation (entry, 2, "wrong");
+            this._effectEntry.set_text ("");
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (false);
         }
     }
 
