@@ -101,20 +101,41 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let entry_text = entry.get_text ();
 
         if (entry_text.length == 0) {
+            // empty string
             print ("Do nothing (empty entry)");
             this._set_validation (entry, 2, "empty");
             this._effectEntry.set_text ("");
             this._prevDayBtn.set_sensitive (false);
             this._nextDayBtn.set_sensitive (false);
-            return;  // empty string
+            return;
         }
 
-        let submissionDate = Util.formatDate (entry_text);
-        if (Util.isDateValid (submissionDate) ) {
+        let submission_date = Util.formatDate (entry_text);
+        if (Util.isDateValid (submission_date) ) {
             // date is valid
+            entry.set_text (submission_date);
+            let fired_date = this._firedEntry.get_text ();
+            if (Util.isDateValid (fired_date) ) {
+                // check consistency between fired date and submission date
+                fired_date = new Date (Util.dateEng (fired_date) );
+                submission_date = new Date (Util.dateEng (submission_date) );
+                if (fired_date >= submission_date) {
+                    // dates valid but not consistent
+                    this._set_validation (entry, 2, "wrong");
+                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                   'dialog-warning');
+                } else {
+                    // dates valid and consistent
+                    this._set_validation (entry, 2, "good");
+                }
+                return;
+            }
+
+
+
             this._set_validation (entry, 2, "good");
-            entry.set_text (submissionDate);
-            this._effectEntry.set_text (submissionDate);
+
+            this._effectEntry.set_text (submission_date);
             this._prevDayBtn.set_sensitive (false);
             this._nextDayBtn.set_sensitive (true);
         } else {

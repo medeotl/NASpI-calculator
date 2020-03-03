@@ -185,6 +185,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">10</property>
+                            <property name="secondary_icon_tooltip_text" translatable="yes">la data di presentazione deve essere successiva alla data di licenziamento.</property>
                             <property name="placeholder_text" translatable="yes">gg/mm/aaaa</property>
                             <signal name="focus-out-event" handler="_onSubmissionEntryLostFocus" swapped="no"/>
                             <signal name="insert-text" handler="_checkInsertedChars" swapped="no"/>
