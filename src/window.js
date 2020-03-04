@@ -131,8 +131,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 return;
             }
 
-
-
             this._set_validation (entry, 2, "good");
 
             this._effectEntry.set_text (submission_date);
@@ -481,6 +479,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 this._removeWrongValueStyle (this._hiredEntry);
             }
+            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // fired and submission date were inconsistent
+                this._set_validation (this._submissionEntry, 2, "good");
+            }
+
             return;
         }
 
@@ -521,6 +524,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 this._removeWrongValueStyle (this._hiredEntry);
             }
+            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // fired and submission date were inconsistent
+                this._set_validation (this._submissionEntry, 2, "good");
+            }
+
         }
     }
 
