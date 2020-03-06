@@ -93,58 +93,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _onSubmissionEntryLostFocus (entry) {
-        /* validate date of submission entry (data presentazione)
-         * if date valid, copy it to effect entry (decorrenza)
-         */
-
-        let entry_text = entry.get_text ();
-
-        if (entry_text.length == 0) {
-            // empty string
-            print ("Do nothing (empty entry)");
-            this._set_validation (entry, 2, "empty");
-            this._effectEntry.set_text ("");
-            this._prevDayBtn.set_sensitive (false);
-            this._nextDayBtn.set_sensitive (false);
-            return;
-        }
-
-        let submission_date = Util.formatDate (entry_text);
-        if (Util.isDateValid (submission_date) ) {
-            // date is valid
-            entry.set_text (submission_date);
-            let fired_date = this._firedEntry.get_text ();
-            if (Util.isDateValid (fired_date) ) {
-                // check consistency between fired date and submission date
-                fired_date = new Date (Util.dateEng (fired_date) );
-                submission_date = new Date (Util.dateEng (submission_date) );
-                if (fired_date >= submission_date) {
-                    // dates valid but not consistent
-                    this._set_validation (entry, 2, "wrong");
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
-                } else {
-                    // dates valid and consistent
-                    this._set_validation (entry, 2, "good");
-                }
-                return;
-            }
-
-            this._set_validation (entry, 2, "good");
-
-            this._effectEntry.set_text (submission_date);
-            this._prevDayBtn.set_sensitive (false);
-            this._nextDayBtn.set_sensitive (true);
-        } else {
-            // date is unvalid
-            this._set_validation (entry, 2, "wrong");
-            this._effectEntry.set_text ("");
-            this._prevDayBtn.set_sensitive (false);
-            this._nextDayBtn.set_sensitive (false);
-        }
-    }
-
     _onNextDayBtnClicked (button) {
         /* increase effect date by one day */
 
@@ -399,6 +347,194 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GLib.idle_add (200, update_cursor_position);
     }
 
+    _onBtnCloseClicked (button) {
+        /* remove in-app notification */
+
+        this._revealer.set_reveal_child (false);
+    }
+
+    _onHiredEntryLostFocus (entry) {
+
+        let entry_text = entry.get_text ();
+
+        if (entry_text.length == 0) {
+            print ("Do nothing (empty entry)");
+            this._set_validation (entry, 0, "empty");
+            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // HIRED and FIRED date were inconsistent
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+                this._set_validation (this._firedEntry, 1, "good");
+            }
+            return;  // empty string
+        }
+
+        let hired_date = Util.formatDate (entry_text);
+        if (Util.isDateValid (hired_date) ) {
+            // HIRED date is valid
+            entry.set_text (hired_date);
+            let fired_date = this._firedEntry.get_text ();
+            if (Util.isDateValid (fired_date)) {
+                // check consistency between HIRED and FIRED date
+                hired_date = new Date (Util.dateEng (hired_date) );
+                fired_date = new Date (Util.dateEng (fired_date) );
+                if (hired_date < fired_date) {
+                    // dates are consistent
+                    this._set_validation (entry, 0, "good");
+                    this._set_validation (this._firedEntry, 1, "good");
+                } else {
+                    // dates aren't consistent
+                    this._set_validation (entry, 0, "wrong");
+                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                   'dialog-warning');
+                    this._set_validation (this._firedEntry, 1, "wrong");
+                    this._firedEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                   'dialog-warning');
+                }
+            }
+        } else {
+            // HIRED date is unvalid
+            this._set_validation (entry, 0, "wrong");
+            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // HIRED and FIRED date were inconsistent
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+                this._set_validation (this._firedEntry, 1, "good");
+            }
+        }
+    }
+
+    _onFiredEntryLostFocus (entry) {
+
+        let entry_text = entry.get_text ();
+
+        if (entry_text.length == 0) {
+            // empty string
+            print ("Do nothing (empty entry)");
+            this._set_validation (entry, 1, "empty");
+            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // HIRED and FIRED date were inconsistent
+                this._set_validation (this._hiredEntry, 0, "good");
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+            }
+            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // FIRED and SUBMISSION date were inconsistent
+                this._set_validation (this._submissionEntry, 2, "good");
+                this._effectEntry.set_text (this._submissionEntry.get_text () );
+                this._prevDayBtn.set_sensitive (false);
+                this._nextDayBtn.set_sensitive (true);
+
+            }
+            return;
+        }
+
+        let fired_date = Util.formatDate (entry_text);
+        if (Util.isDateValid (fired_date) ) {
+            // FIRED date is valid
+            entry.set_text (fired_date);
+            let hired_date = this._hiredEntry.get_text ();
+            let submission_date = this._submissionEntry.get_text ();
+            if (Util.isDateValid (hired_date) ) {
+                // check consistency between HIRED and FIRED date
+                hired_date = new Date (Util.dateEng (hired_date) );
+                fired_date = new Date (Util.dateEng (fired_date) );
+                if (hired_date < fired_date) {
+                    // dates are consistent
+                    this._set_validation (this._hiredEntry, 0, "good");
+                    this._set_validation (entry, 1, "good");
+                } else {
+                    // dates aren't consistent
+                    this._set_validation (this._hiredEntry, 0, "wrong");
+                    this._set_validation (entry, 1, "wrong");
+                    this._hiredEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                              'dialog-warning');
+                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                   'dialog-warning');
+                }
+            }
+            if (Util.isDateValid (submission_date) ) {
+                // check consistency between FIRED and SUBMISSION date
+                submission_date = new Date (Util.dateEng (submission_date) );
+                if (fired_date < submission_date) {
+                    // dates are consistent
+                    this._set_validation (this._submissionEntry, 2, "good");
+                } else {
+                    // dates aren't consistent
+                    this._set_validation (entry, 1, "good")
+                    this._set_validation (this._submissionEntry, 2, "wrong");
+                    this._submissionEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                                   'dialog-warning');
+                    this._effectEntry.set_text ("");
+                    this._prevDayBtn.set_sensitive (false);
+                    this._nextDayBtn.set_sensitive (false);
+                }
+            }
+        } else {
+            // FIRED date is unvalid
+            this._set_validation (entry, 1, "wrong");
+            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // HIRED and FIRED date were inconsistent
+                this._set_validation (this._hiredEntry, 0, "good");
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+
+            }
+            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
+                // FIRED and SUBMISSION date were inconsistent
+                this._set_validation (this._submissionEntry, 2, "good");
+                this._effectEntry.set_text (this._submissionEntry.get_text () );
+                this._prevDayBtn.set_sensitive (false);
+                this._nextDayBtn.set_sensitive (true);
+            }
+
+        }
+    }
+
+    _onSubmissionEntryLostFocus (entry) {
+        /* validate date of submission entry (data presentazione)
+         * if date valid, copy it to effect entry (decorrenza)
+         */
+
+        let entry_text = entry.get_text ();
+
+        if (entry_text.length == 0) {
+            // empty string
+            print ("Do nothing (empty entry)");
+            this._set_validation (entry, 2, "empty");
+            this._effectEntry.set_text ("");
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (false);
+            return;
+        }
+
+        let submission_date = Util.formatDate (entry_text);
+        if (Util.isDateValid (submission_date) ) {
+            // SUBMISSION date is valid
+            entry.set_text (submission_date);
+            let fired_date = this._firedEntry.get_text ();
+            if (Util.isDateValid (fired_date) ) {
+                // check consistency between FIRED date and SUBMISSION date
+                fired_date = new Date (Util.dateEng (fired_date) );
+                submission_date = new Date (Util.dateEng (submission_date) );
+                if (fired_date < submission_date) {
+                    // dates are consistent
+                    this._set_validation (entry, 2, "good");
+                    this._effectEntry.set_text (entry.get_text () );
+                    this._prevDayBtn.set_sensitive (false);
+                    this._nextDayBtn.set_sensitive (true);
+                } else {
+                    // dates aren't consistent
+                    this._set_validation (entry, 2, "wrong");
+                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                                   'dialog-warning');
+                }
+            }
+        } else {
+            // SUBMISSION date is unvalid
+            this._set_validation (entry, 2, "wrong");
+            this._effectEntry.set_text ("");
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (false);
+        }
+    }
+
     _onMoneyEntryCommaDeleted (entry, value, cursor_pos) {
         /* remove the comma and reformat the value in the entry */
 
@@ -420,125 +556,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GLib.idle_add (200, update_cursor_position);
     }
 
-    _onBtnCloseClicked (button) {
-        /* remove in-app notification */
-
-        this._revealer.set_reveal_child (false);
-    }
-
-    _onHiredEntryLostFocus (entry) {
-
-        let entry_text = entry.get_text ();
-
-        if (entry_text.length == 0) {
-            print ("Do nothing (empty entry)");
-            this._set_validation (entry, 0, "empty");
-            return;  // empty string
-        }
-
-        let hired_date = Util.formatDate (entry_text);
-        if (Util.isDateValid (hired_date) ) {
-            // date is valid
-            entry.set_text (hired_date);
-            if (is_entry_value_valid[1]) {
-                // check consistency between hired and fired date
-                let fired_date = this._firedEntry.get_text ();
-                hired_date = new Date (Util.dateEng (hired_date) );
-                fired_date = new Date (Util.dateEng (fired_date) );
-                if (hired_date >= fired_date) {
-                    // report the error in the GUI
-                    this._set_validation (entry, 0, "wrong");
-                    this._set_validation (this._firedEntry, 1, "wrong");
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
-                    this._firedEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
-                    return;
-                }
-            }
-            this._set_validation (entry, 0, "good");
-
-        } else {
-            // date is unvalid
-            this._set_validation (entry, 0, "wrong");
-        }
-    }
-
-    _onFiredEntryLostFocus (entry) {
-
-        let entry_text = entry.get_text ();
-
-        if (entry_text.length == 0) {
-            // empty string
-            print ("Do nothing (empty entry)");
-            this._set_validation (entry, 1, "empty");
-            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
-                // hired and fired date were inconsistent
-                this._hiredEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                          null);
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
-                this._removeWrongValueStyle (this._hiredEntry);
-            }
-            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
-                // fired and submission date were inconsistent
-                this._set_validation (this._submissionEntry, 2, "good");
-            }
-
-            return;
-        }
-
-        let fired_date = Util.formatDate (entry_text);
-        if (Util.isDateValid (fired_date) ) {
-            // date is valid
-            entry.set_text (fired_date);
-            let hired_date = this._hiredEntry.get_text ();
-            if (Util.isDateValid (hired_date) ) {
-                // check consistency between hired and fired date
-                hired_date = new Date (Util.dateEng (hired_date) );
-                fired_date = new Date (Util.dateEng (fired_date) );
-                if (hired_date >= fired_date) {
-                    // dates valid but not consistent
-                    this._set_validation (this._hiredEntry, 0, "wrong");
-                    this._set_validation (entry, 1, "wrong");
-                    this._hiredEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                              'dialog-warning');
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
-
-                    return;
-                } else {
-                    // dates valid and consistent
-                    this._set_validation (this._hiredEntry, 0, "good");
-                    this._set_validation (entry, 1, "good");
-                }
-            }
-            this._set_validation (entry, 1, "good");
-
-        } else {
-            // date is unvalid
-            this._set_validation (entry, 1, "wrong");
-            if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
-                // hired and fired date were inconsistent
-                this._hiredEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                          null);
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
-                this._removeWrongValueStyle (this._hiredEntry);
-            }
-            if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
-                // fired and submission date were inconsistent
-                this._set_validation (this._submissionEntry, 2, "good");
-            }
-
-        }
-    }
-
     _onBtnCalcolaClicked (button) {
-        /* check entries correctness and make calculations */
+        /* make calculations */
 
-        // check values
-        this._extraDateCheck ();
-
-        // make calculation
     }
 
 });
