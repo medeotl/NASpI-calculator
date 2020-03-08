@@ -73,8 +73,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _checkInsertedChars (entry, new_text, length) {
         /* limit date chars to digits or / */
 
-        if (length == 1 ) {
-            // trying to inserting a non numeric char
+        if (length == 1) {
+            // trying to inserting a single char
             if (isNaN (+new_text) && new_text != '/' ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
             }
@@ -83,7 +83,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             if (isNaN (new_text.replace (/\//g, '') ) ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
                 this._reportError ("Stai provando a incollare un valore non corretto: "
-                                    + new_text);
+                                   , new_text);
             }
         }
     }
@@ -120,7 +120,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkNumeric (entry, new_text) {
-        /* allow insertion of numeric only valuse */
+        /* allow insertion of numeric only values */
 
         if (isNaN (new_text) ) {
             GObject.signal_stop_emission_by_name(entry, "insert-text");
@@ -559,10 +559,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GLib.idle_add (200, update_cursor_position);
     }
 
-    _reportError (error_msg) {
+    _reportError (error_msg, pasted_value="") {
         /* show in-app notification of the error message */
 
-        this._lbl_inapp_error.set_text (error_msg);
+        this._lbl_inapp_error.set_markup_with_mnemonic(error_msg
+                                                       + '<i>' + pasted_value + '</i>');
         this._revealer.set_reveal_child (true);
     }
 

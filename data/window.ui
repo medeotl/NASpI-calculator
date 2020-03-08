@@ -456,6 +456,7 @@
                   <object class="GtkLabel" id="lbl_inapp_error">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="use_markup">True</property>
                     <property name="wrap">True</property>
                   </object>
                   <packing>
