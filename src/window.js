@@ -73,17 +73,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _checkInsertedChars (entry, new_text, length) {
         /* limit date chars to digits or / */
 
-        if (length == 1 ) { // trying to inserting a non numeric char
+        if (length == 1 ) {
+            // trying to inserting a non numeric char
             if (isNaN (+new_text) && new_text != '/' ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
             }
-        } else { // getting a paste event
+        } else {
+            // getting a paste event
             if (isNaN (new_text.replace (/\//g, '') ) ) {
                 GObject.signal_stop_emission_by_name (entry, "insert-text");
-                let error_msg = "Stai provando a incollare un valore non corretto: "
-                                + new_text;
-                this._lbl_inapp_error.set_text (error_msg);
-                this._revealer.set_reveal_child (true);
+                this._reportError ("Stai provando a incollare un valore non corretto: "
+                                    + new_text);
             }
         }
     }
@@ -342,12 +342,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GLib.idle_add (200, update_cursor_position);
     }
 
-    _onBtnCloseClicked (button) {
-        /* remove in-app notification */
-
-        this._revealer.set_reveal_child (false);
-    }
-
     _onHiredEntryLostFocus (entry) {
 
         let entry_text = entry.get_text ();
@@ -564,9 +558,30 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         GLib.idle_add (200, update_cursor_position);
     }
 
+    _reportError (error_msg) {
+        /* show in-app notification of the error message */
+
+        this._lbl_inapp_error.set_text (error_msg);
+        this._revealer.set_reveal_child (true);
+    }
+
+    _onBtnCloseClicked (button) {
+        /* remove in-app notification */
+
+        this._revealer.set_reveal_child (false);
+    }
+
     _onBtnCalcolaClicked (button) {
         /* make calculations */
 
+        if (is_entry_value_valid == "true,true,true,true,true") {
+            // finally make calculations
+            print ("@@@ ", "mumble mumble");
+        } else {
+            // some values is incorrect or empty
+            this._reportError ("Controllare che tutti i campi siano compilati "
+                               + "correttamente e riprovare");
+        }
     }
 
 });
