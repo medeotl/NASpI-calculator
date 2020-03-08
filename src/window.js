@@ -343,6 +343,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onHiredEntryLostFocus (entry) {
+        /* chek value inserted and his consistency with fired date */
 
         let entry_text = entry.get_text ();
 
@@ -395,7 +396,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onFiredEntryLostFocus (entry) {
-
+        /* chek value inserted and his consistency with hired and submission dates */
         let entry_text = entry.get_text ();
 
         if (entry_text.length == 0) {
@@ -484,8 +485,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _onSubmissionEntryLostFocus (entry) {
-        /* validate date of submission entry (data presentazione)
-         * if date valid, copy it to effect entry (decorrenza)
+        /* chek value inserted and his consistency with fired date
+         * if date valid, copy it to effect entry
          */
 
         let entry_text = entry.get_text ();
