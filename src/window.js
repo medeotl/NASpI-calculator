@@ -119,11 +119,22 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
     }
 
-    _checkNumeric (entry, new_text) {
+    _checkNumeric (entry, new_text, length) {
         /* allow insertion of numeric only values */
 
-        if (isNaN (new_text) ) {
+        if (isNaN (+new_text) ) {
             GObject.signal_stop_emission_by_name(entry, "insert-text");
+            if (length > 1) {
+                // received a paste event with wrong value
+                this._reportError ("Stai provando a inserire un valore non numerico: \n"
+                                   , new_text);
+            }
+        } else if (+new_text > 740) {
+            // received a paste event with out of range value
+            GObject.signal_stop_emission_by_name(entry, "insert-text");
+            this._reportError ("Stai provando a inserire un valore troppo grande: "
+                              + "<b>" + new_text + "</b>"
+                              + "\nMax consentito: 730 (2 anni)" );
         }
     }
 
