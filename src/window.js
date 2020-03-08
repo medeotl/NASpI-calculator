@@ -390,6 +390,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     this._firedEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
                                                    'dialog-warning');
                 }
+            } else {
+                // HIRED date is valid and FIRED date is invalid
+                this._set_validation (entry, 0, "good");
             }
         } else {
             // HIRED date is unvalid
@@ -449,6 +452,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
                                                    'dialog-warning');
                 }
+            } else {
+                // HIRED date is invalid and FIRED date is valid
+                this._set_validation (entry, 1, "good");
             }
             if (Util.isDateValid (submission_date) ) {
                 // check consistency between FIRED and SUBMISSION date
@@ -525,6 +531,12 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                     entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
                                                    'dialog-warning');
                 }
+            } else {
+                // SUBMISSION date is valid and FIRED date is invalid
+                this._set_validation (entry, 2, "good");
+                this._effectEntry.set_text (entry.get_text () );
+                this._prevDayBtn.set_sensitive (false);
+                this._nextDayBtn.set_sensitive (true);
             }
         } else {
             // SUBMISSION date is unvalid
