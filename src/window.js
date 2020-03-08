@@ -458,6 +458,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             }
             if (Util.isDateValid (submission_date) ) {
                 // check consistency between FIRED and SUBMISSION date
+                fired_date = new Date (Util.dateEng (entry.get_text () ) );
                 submission_date = new Date (Util.dateEng (submission_date) );
                 if (fired_date < submission_date) {
                     // dates are consistent
