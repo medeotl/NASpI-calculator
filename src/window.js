@@ -67,11 +67,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 this._removeWrongValueStyle (entry);
                 is_entry_value_valid[entry_id] = false;
         }
-        if (is_entry_value_valid == "true,true,true,true,true") {
-            this._btnCalcola.set_sensitive (true);
-        } else {
-            this._btnCalcola.set_sensitive (false);
-        }
         print ("\n@@@ ", is_entry_value_valid);
     }
 
