@@ -120,7 +120,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _checkNumeric (entry, new_text, length) {
-        /* allow insertion of numeric only values */
+        /* allow insertion of numeric only values
+         * if value is pasted, it can't be higher then 730
+         */
 
         if (isNaN (+new_text) ) {
             GObject.signal_stop_emission_by_name(entry, "insert-text");
