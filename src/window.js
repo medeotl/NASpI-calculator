@@ -137,6 +137,10 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             this._reportError ("Stai provando a inserire un valore troppo grande: "
                               + "<b>" + new_text + "</b>"
                               + "\nMax consentito: 730 (2 anni)" );
+        } else {
+            // received a paste event with in range value
+            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
+            this._removeWrongValueStyle (entry);
         }
     }
 
