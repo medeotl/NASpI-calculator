@@ -232,7 +232,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         } else if (value <= 730 ) {
             // good value
             this._set_validation (entry, 3, "good")
-            entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
         } else {
             // wrong value
             this._set_validation (entry, 3, "wrong");
