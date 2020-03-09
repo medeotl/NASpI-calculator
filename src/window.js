@@ -364,7 +364,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let entry_text = entry.get_text ();
 
         if (entry_text.length == 0) {
-            print ("Do nothing (empty entry)");
             this._set_validation (entry, 0, "empty");
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
@@ -417,7 +416,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         if (entry_text.length == 0) {
             // empty string
-            print ("Do nothing (empty entry)");
             this._set_validation (entry, 1, "empty");
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
@@ -509,7 +507,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         if (entry_text.length == 0) {
             // empty string
-            print ("Do nothing (empty entry)");
             this._set_validation (entry, 2, "empty");
             this._effectEntry.set_text ("");
             this._prevDayBtn.set_sensitive (false);
