@@ -65,6 +65,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 break;
             case "empty":
                 this._removeWrongValueStyle (entry);
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 is_entry_value_valid[entry_id] = false;
         }
         print ("\n@@@ ", is_entry_value_valid);
@@ -364,12 +365,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let entry_text = entry.get_text ();
 
         if (entry_text.length == 0) {
-            this._set_validation (entry, 0, "empty");
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 this._set_validation (this._firedEntry, 1, "good");
             }
+            this._set_validation (entry, 0, "empty");
             return;  // empty string
         }
 
@@ -416,11 +416,9 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
         if (entry_text.length == 0) {
             // empty string
-            this._set_validation (entry, 1, "empty");
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
                 this._set_validation (this._hiredEntry, 0, "good");
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
             }
             if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // FIRED and SUBMISSION date were inconsistent
@@ -430,6 +428,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 this._nextDayBtn.set_sensitive (true);
 
             }
+            this._set_validation (entry, 1, "empty");
             return;
         }
 
