@@ -85,10 +85,14 @@ function dateEng (dateIta) {
     return (MM + "/" + DD + "/" + YY);
 }
 
-function datesAreConsitancy (first_date, second_date) {
-    /* check if first date is preceding second date */
+function areDatesConsistent (first_date, second_date) {
+    /* check if first date is preceding second date
+     * dates are formatted as DD/MM/YYY and supposed valid
+     */
 
-
+    first_date = new Date (dateEng (first_date) );
+    second_date = new Date (dateEng (second_date) );
+    return (first_date < second_date);
 }
 
 function add_dots (value, new_value = "") {

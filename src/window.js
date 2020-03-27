@@ -50,7 +50,11 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     }
 
     _set_validation (entry, entry_id, type) {
-        /* set validation mask for the entry and add/remove wrong entry style */
+        /* - set validation mask for the entry
+         * - add/remove wrong entry style
+         * - add/remove dialog-warning tooltip
+         * - if entry is submission properly set some values of effect entry
+         */
 
         switch (type)
         {
@@ -59,14 +63,28 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 is_entry_value_valid[entry_id] = true;
                 break;
+            case "inconsistent":
+                this._addWrongValueStyle (entry);
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
+                                               "dialog-warning");
+                is_entry_value_valid[entry_id] = false;
+                break;
             case "wrong":
                 this._addWrongValueStyle (entry);
+                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 is_entry_value_valid[entry_id] = false;
                 break;
             case "empty":
                 this._removeWrongValueStyle (entry);
                 entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 is_entry_value_valid[entry_id] = false;
+        }
+
+        if (entry_id == 2 && type != "good") {
+            // doing extra setting on effect entry
+            this._effectEntry.set_text ("");
+            this._prevDayBtn.set_sensitive (false);
+            this._nextDayBtn.set_sensitive (false);
         }
         print ("\n@@@ ", is_entry_value_valid);
     }
@@ -380,20 +398,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let fired_date = this._firedEntry.get_text ();
             if (Util.isDateValid (fired_date)) {
                 // check consistency between HIRED and FIRED date
-                hired_date = new Date (Util.dateEng (hired_date) );
-                fired_date = new Date (Util.dateEng (fired_date) );
-                if (hired_date < fired_date) {
+                if (Util.areDatesConsistent (hired_date, fired_date) ) {
                     // dates are consistent
                     this._set_validation (entry, 0, "good");
                     this._set_validation (this._firedEntry, 1, "good");
                 } else {
-                    // dates aren't consistent
-                    this._set_validation (entry, 0, "wrong");
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
-                    this._set_validation (this._firedEntry, 1, "wrong");
-                    this._firedEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
+                    // dates are inconsistent
+                    this._set_validation (entry, 0, "inconsistent");
+                    this._set_validation (this._firedEntry, 1, "inconsistent");
                 }
             } else {
                 // HIRED date is valid and FIRED date is invalid
@@ -404,7 +416,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             this._set_validation (entry, 0, "wrong");
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
                 this._set_validation (this._firedEntry, 1, "good");
             }
         }
@@ -412,6 +423,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
 
     _onFiredEntryLostFocus (entry) {
         /* chek value inserted and his consistency with hired and submission dates */
+
         let entry_text = entry.get_text ();
 
         if (entry_text.length == 0) {
@@ -438,44 +450,31 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             entry.set_text (fired_date);
             let hired_date = this._hiredEntry.get_text ();
             let submission_date = this._submissionEntry.get_text ();
+            if (Util.isDateValid (submission_date) ) {
+                // check consistency between FIRED and SUBMISSION date
+                if (Util.areDatesConsistent (fired_date, submission_date) ) {
+                    // dates are consistent
+                    this._set_validation (this._submissionEntry, 2, "good");
+                } else {
+                    // dates are inconsistent
+                    this._set_validation (entry, 1, "good")
+                    this._set_validation (this._submissionEntry, 2, "inconsistent");
+                }
+            }
             if (Util.isDateValid (hired_date) ) {
                 // check consistency between HIRED and FIRED date
-                hired_date = new Date (Util.dateEng (hired_date) );
-                fired_date = new Date (Util.dateEng (fired_date) );
-                if (hired_date < fired_date) {
+                if (Util.areDatesConsistent (hired_date, fired_date) ) {
                     // dates are consistent
                     this._set_validation (this._hiredEntry, 0, "good");
                     this._set_validation (entry, 1, "good");
                 } else {
-                    // dates aren't consistent
-                    this._set_validation (this._hiredEntry, 0, "wrong");
-                    this._set_validation (entry, 1, "wrong");
-                    this._hiredEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                              'dialog-warning');
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
+                    // dates are inconsistent
+                    this._set_validation (this._hiredEntry, 0, "inconsistent");
+                    this._set_validation (entry, 1, "inconsistent");
                 }
             } else {
                 // HIRED date is invalid and FIRED date is valid
                 this._set_validation (entry, 1, "good");
-            }
-            if (Util.isDateValid (submission_date) ) {
-                // check consistency between FIRED and SUBMISSION date
-                fired_date = new Date (Util.dateEng (entry.get_text () ) );
-                submission_date = new Date (Util.dateEng (submission_date) );
-                if (fired_date < submission_date) {
-                    // dates are consistent
-                    this._set_validation (this._submissionEntry, 2, "good");
-                } else {
-                    // dates aren't consistent
-                    this._set_validation (entry, 1, "good")
-                    this._set_validation (this._submissionEntry, 2, "wrong");
-                    this._submissionEntry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                                   'dialog-warning');
-                    this._effectEntry.set_text ("");
-                    this._prevDayBtn.set_sensitive (false);
-                    this._nextDayBtn.set_sensitive (false);
-                }
             }
         } else {
             // FIRED date is unvalid
@@ -483,8 +482,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             if (entry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // HIRED and FIRED date were inconsistent
                 this._set_validation (this._hiredEntry, 0, "good");
-                entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY, null);
-
             }
             if (this._submissionEntry.get_icon_name (Gtk.EntryIconPosition.SECONDARY) != null) {
                 // FIRED and SUBMISSION date were inconsistent
@@ -507,32 +504,26 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         if (entry_text.length == 0) {
             // empty string
             this._set_validation (entry, 2, "empty");
-            this._effectEntry.set_text ("");
-            this._prevDayBtn.set_sensitive (false);
-            this._nextDayBtn.set_sensitive (false);
             return;
         }
 
         let submission_date = Util.formatDate (entry_text);
+
         if (Util.isDateValid (submission_date) ) {
             // SUBMISSION date is valid
             entry.set_text (submission_date);
             let fired_date = this._firedEntry.get_text ();
             if (Util.isDateValid (fired_date) ) {
                 // check consistency between FIRED date and SUBMISSION date
-                fired_date = new Date (Util.dateEng (fired_date) );
-                submission_date = new Date (Util.dateEng (submission_date) );
-                if (fired_date < submission_date) {
+                if (Util.areDatesConsistent (fired_date, submission_date) ) {
                     // dates are consistent
                     this._set_validation (entry, 2, "good");
                     this._effectEntry.set_text (entry.get_text () );
                     this._prevDayBtn.set_sensitive (false);
                     this._nextDayBtn.set_sensitive (true);
                 } else {
-                    // dates aren't consistent
-                    this._set_validation (entry, 2, "wrong");
-                    entry.set_icon_from_icon_name (Gtk.EntryIconPosition.SECONDARY,
-                                                   'dialog-warning');
+                    // dates are inconsistent
+                    this._set_validation (entry, 2, "inconsistent");
                 }
             } else {
                 // SUBMISSION date is valid and FIRED date is invalid
@@ -544,9 +535,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         } else {
             // SUBMISSION date is unvalid
             this._set_validation (entry, 2, "wrong");
-            this._effectEntry.set_text ("");
-            this._prevDayBtn.set_sensitive (false);
-            this._nextDayBtn.set_sensitive (false);
         }
     }
 
