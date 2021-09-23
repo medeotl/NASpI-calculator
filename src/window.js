@@ -186,8 +186,8 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         }
         if (key_val == Gdk.keyval_from_name ('comma') ) {
             if (entry.get_text ().indexOf (',') != - 1) {
-                // there's alrealdy a comma
-                GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                // there's already a comma
+                GObject.signal_stop_emission_by_name (entry, "key-press-event");
                 return;
             } else {
                 this._onMoneyEntryCommaAdded (entry);
@@ -200,7 +200,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let char_to_be_deleted = value.charAt (cursor_pos - 1);
             switch (char_to_be_deleted) {
                 case '.':
-                    GObject.signal_stop_emission_by_name(entry, "key-press-event");
+                    GObject.signal_stop_emission_by_name (entry, "key-press-event");
                     return;
                 case ',':
                     this._onMoneyEntryCommaDeleted (entry, value, cursor_pos);
