@@ -150,7 +150,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                 this._reportError ("Stai provando a inserire un valore non numerico: \n"
                                    , new_text);
             }
-        } else if (+new_text > 740) {
+        } else if (+new_text > 730) {
             // received a paste event with out of range value
             GObject.signal_stop_emission_by_name(entry, "insert-text");
             this._reportError ("Stai provando a inserire un valore troppo grande: "
