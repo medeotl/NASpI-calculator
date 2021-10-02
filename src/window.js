@@ -114,7 +114,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let DD = Number (date.slice (0,2));
         let MM = Number (date.slice (3,5));
         let YY = Number (date.slice (6));
-        let newDate = new Date (YY, MM, DD + 1).toLocaleString ();
         this._effectEntry.set_text (
             new Date (YY, MM - 1, DD + 1).toLocaleString ()
         );
