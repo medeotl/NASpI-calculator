@@ -116,7 +116,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let YY = Number (date.slice (6));
         let newDate = new Date (YY, MM, DD + 1).toLocaleString ();
         this._effectEntry.set_text (
-            new Date (YY, MM - 1, DD + 1).toLocaleString ()
+            new Date (YY, MM - 1, DD + 1).toLocaleDateString ()
         );
         this._prevDayBtn.set_sensitive (true);
     }
@@ -129,7 +129,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         let MM = Number (date.slice (3,5));
         let YY = Number (date.slice (6));
         this._effectEntry.set_text (
-            new Date (YY, MM - 1, DD - 1).toLocaleString ()
+            new Date (YY, MM - 1, DD - 1).toLocaleDateString ()
         );
         let submissionDate = this._submissionEntry.get_text ();
         let effectDate = this._effectEntry.get_text ();
