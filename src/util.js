@@ -95,6 +95,14 @@ function areDatesConsistent (first_date, second_date) {
     return (first_date < second_date);
 }
 
+function increaseDate (date, days) {
+    /* increase date of n days. Date is in "DD/MM/YYYY" textual form */
+    let DD = Number (date.slice (0,2));
+    let MM = Number (date.slice (3,5));
+    let YY = Number (date.slice (6,10));
+    return new Date (YY, MM - 1, DD + days - 1).toLocaleDateString ()
+}
+
 function add_dots (value, new_value = "") {
     /* recursively add dots to numeric value:
      * 12132143432 --> 12.132.143.432
@@ -149,3 +157,5 @@ function test () {
 }
 
 //~ test ();
+//~ let data_prova = increaseDate("29/09/2015", 44)
+//~ print ("@@@ data incrementata", data_prova);
