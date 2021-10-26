@@ -28,6 +28,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                        'prevDayBtn', 'effectEntry', 'nextDayBtn',
                        'daysEntry', 'moneyEntry',
                        'btnCalcola',
+                       'lblLastNaspiDay',
                        'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
@@ -575,9 +576,14 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _onBtnCalcolaClicked (button) {
         /* make calculations */
 
-        if (is_entry_value_valid == "true,true,true,true,true") {
+        if (is_entry_value_valid = "true,true,true,true,true") {
             // finally make calculations
             print ("@@@ ", "mumble mumble");
+            // calculate last NASpI date
+            let date = this._effectEntry.get_text ();
+            let naspi_days = this._daysEntry.get_text ();
+            let last_naspi_day = Util.increaseDate (date, naspi_days);
+            this._lblLastNaspiDay.set_text ("Ultimo giorno NASpI: " + last_naspi_day );
         } else {
             // some values is incorrect or empty
             this._reportError ("Controllare che tutti i campi siano compilati "
