@@ -577,8 +577,6 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* make calculations */
 
         if (is_entry_value_valid = "true,true,true,true,true") {
-            // finally make calculations
-            print ("@@@ ", "mumble mumble");
             // calculate last NASpI date
             let date = this._effectEntry.get_text ();
             let naspi_days = this._daysEntry.get_text ();
