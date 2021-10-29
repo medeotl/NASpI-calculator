@@ -28,7 +28,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                        'prevDayBtn', 'effectEntry', 'nextDayBtn',
                        'daysEntry', 'moneyEntry',
                        'btnCalcola',
-                       'lblLastNaspiDay',
+                       'lblTotalIncome','lblLastNaspiDay',
                        'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
@@ -87,7 +87,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             this._prevDayBtn.set_sensitive (false);
             this._nextDayBtn.set_sensitive (false);
         }
-        print ("\n@@@ ", is_entry_value_valid);
+        //~ print ("\n@@@ ", is_entry_value_valid);
     }
 
     _checkInsertedChars (entry, new_text, length) {
@@ -576,10 +576,32 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _onBtnCalcolaClicked (button) {
         /* make calculations */
 
-        if (is_entry_value_valid = "true,true,true,true,true") {
+        // CHANGE_ME  modificato if (!=) per facilitare test
+        if (is_entry_value_valid != "true,true,true,true,true") {
+            // calculate due amount
+            let montly_income = this._moneyEntry.get_text ();
+            montly_income = parseFloat (montly_income.slice (2).replace (".", "")
+                                                               .replace (",", "."));
+            if (montly_income <= 1195) {
+                montly_income = montly_income * 0.75;
+            } else {
+                montly_income = (1195 * 0.75) + ((montly_income - 1195) * 0.25);
+                montly_income = (montly_income <= 1300) ? montly_income : 1300;
+            }
+            print ("@@@ quanto mi tocca al mese:", montly_income);
+            let daily_income = montly_income / 4.33 / 7;
+            print ("@@@ quanto mi tocca al giorno:", daily_income);
+            let naspi_days = this._daysEntry.get_text ();
+            let total_income = (daily_income * naspi_days).toFixed(2);
+            // add dots to separate the thousands and comma for italian locale
+            let [floor, decimal] = total_income.split(".");
+            total_income = Util.add_dots (floor) + "," + decimal;
+            print ("@@@ quanto mi tocca in tutto: ", total_income);
+            // TODO rappresentare in formato italiano total_income (i.e. 1.234,56)
+            this._lblTotalIncome.set_text ("Importo spettante: € " + total_income);
+
             // calculate last NASpI date
             let date = this._effectEntry.get_text ();
-            let naspi_days = this._daysEntry.get_text ();
             let last_naspi_day = Util.increaseDate (date, naspi_days);
             this._lblLastNaspiDay.set_text ("Ultimo giorno NASpI: " + last_naspi_day );
         } else {
