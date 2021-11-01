@@ -579,17 +579,17 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         // CHANGE_ME  modificato if (!=) per facilitare test
         if (is_entry_value_valid != "true,true,true,true,true") {
             // calculate due amount
-            let montly_income = this._moneyEntry.get_text ();
-            montly_income = parseFloat (montly_income.slice (2).replace (".", "")
+            let monthly_income = this._moneyEntry.get_text ();
+            monthly_income = parseFloat (monthly_income.slice (2).replace (".", "")
                                                                .replace (",", "."));
-            if (montly_income <= 1195) {
-                montly_income = montly_income * 0.75;
+            if (monthly_income <= 1195) {
+                monthly_income = monthly_income * 0.75;
             } else {
-                montly_income = (1195 * 0.75) + ((montly_income - 1195) * 0.25);
-                montly_income = (montly_income <= 1300) ? montly_income : 1300;
+                monthly_income = (1195 * 0.75) + ((monthly_income - 1195) * 0.25);
+                monthly_income = (monthly_income <= 1300) ? monthly_income : 1300;
             }
-            print ("@@@ quanto mi tocca al mese:", montly_income);
-            let daily_income = montly_income / 4.33 / 7;
+            print ("@@@ quanto mi tocca al mese:", monthly_income);
+            let daily_income = monthly_income / 4.33 / 7;
             print ("@@@ quanto mi tocca al giorno:", daily_income);
             let naspi_days = this._daysEntry.get_text ();
             let total_income = (daily_income * naspi_days).toFixed(2);
