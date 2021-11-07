@@ -576,8 +576,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
     _onBtnCalcolaClicked (button) {
         /* make calculations */
 
-        // CHANGE_ME  modificato if (!=) per facilitare test
-        if (is_entry_value_valid != "true,true,true,true,true") {
+        if (is_entry_value_valid == "true,true,true,true,true") {
             // calculate due amount
             let monthly_income = this._moneyEntry.get_text ();
             monthly_income = parseFloat (monthly_income.slice (2).replace (".", "")
@@ -592,12 +591,29 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let daily_income = monthly_income / 4.33 / 7;
             print ("@@@ quanto mi tocca al giorno:", daily_income);
             let naspi_days = this._daysEntry.get_text ();
-            let total_income = (daily_income * naspi_days).toFixed(2);
+
+            if (naspi_days <= 90) {
+                var total_income = (daily_income * naspi_days);
+            } else {
+                // calculate montlhly 3% reduction
+                var total_income = daily_income * 90;
+                naspi_days = naspi_days - 90;
+                let daily_income_reduction = daily_income * 0.03;
+                daily_income = daily_income - daily_income_reduction;
+                while (naspi_days > 30) {
+                    total_income += daily_income * 30;
+                    daily_income = daily_income - daily_income_reduction;
+                    naspi_days = naspi_days - 30;
+                }
+                total_income = (naspi_days > 0) ?
+                    total_income + (naspi_days * daily_income) :
+                    total_income;
+            }
             // add dots to separate the thousands and comma for italian locale
+            total_income = total_income.toFixed(2);
             let [floor, decimal] = total_income.split(".");
             total_income = Util.add_dots (floor) + "," + decimal;
             print ("@@@ quanto mi tocca in tutto: ", total_income);
-            // TODO rappresentare in formato italiano total_income (i.e. 1.234,56)
             this._lblTotalIncome.set_text ("Importo spettante: € " + total_income);
 
             // calculate last NASpI date
