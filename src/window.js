@@ -581,11 +581,13 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             let monthly_income = this._moneyEntry.get_text ();
             monthly_income = parseFloat (monthly_income.slice (2).replace (".", "")
                                                                  .replace (",", "."));
-            if (monthly_income <= 1195) {
+            const naspi_year = this._effectEntry.get_text ().slice (6);
+            const [YY_treshold, YY_naspi_limit] = Util.year_limits.get (naspi_year);
+            if (monthly_income <= YY_treshold) {
                 monthly_income = monthly_income * 0.75;
             } else {
-                monthly_income = (1195 * 0.75) + ((monthly_income - 1195) * 0.25);
-                monthly_income = (monthly_income <= 1300) ? monthly_income : 1300;
+                monthly_income = (YY_treshold * 0.75) + ((monthly_income - YY_treshold) * 0.25);
+                monthly_income = (monthly_income <= YY_naspi_limit) ? monthly_income : YY_naspi_limit;
             }
             print ("@@@ quanto mi tocca al mese:", monthly_income);
             let daily_income = monthly_income / 4.33 / 7;
