@@ -580,7 +580,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             // calculate due amount
             let monthly_income = this._moneyEntry.get_text ();
             monthly_income = parseFloat (monthly_income.slice (2).replace (".", "")
-                                                               .replace (",", "."));
+                                                                 .replace (",", "."));
             if (monthly_income <= 1195) {
                 monthly_income = monthly_income * 0.75;
             } else {
