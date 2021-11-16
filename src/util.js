@@ -1,3 +1,15 @@
+var year_limits = new Map([
+//  [year,   [treshold, max NASpI limit]]
+    ['2015', [1195, 1300]],
+    ['2016', [1195, 1300]],
+    ['2017', [1195, 1300]],
+    ['2018', [1221.44, 1314.30]],
+    ['2019', [1328.76, 1221.44]],
+    ['2020', [1335.40, 1227.55]],
+    ['2021', [1335.40, 1227.55]],
+]);
+
+
 function formatDate (date) {
     /* return date formatted as DD/MM/YYYY if it is in one of the valid formats
      * else return -1
