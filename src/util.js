@@ -1,3 +1,15 @@
+var year_limits = new Map([
+//  [year,   [treshold, max NASpI limit]]
+    ['2015', [1195, 1300]],
+    ['2016', [1195, 1300]],
+    ['2017', [1195, 1300]],
+    ['2018', [1221.44, 1314.30]],
+    ['2019', [1328.76, 1221.44]],
+    ['2020', [1335.40, 1227.55]],
+    ['2021', [1335.40, 1227.55]],
+]);
+
+
 function formatDate (date) {
     /* return date formatted as DD/MM/YYYY if it is in one of the valid formats
      * else return -1
@@ -95,6 +107,14 @@ function areDatesConsistent (first_date, second_date) {
     return (first_date < second_date);
 }
 
+function increaseDate (date, days) {
+    /* increase date of n days. Date is in "DD/MM/YYYY" textual form */
+    let DD = Number (date.slice (0,2));
+    let MM = Number (date.slice (3,5));
+    let YYYY = Number (date.slice (6,10));
+    return new Date (YYYY, MM - 1, DD + parseInt(days) - 1).toLocaleDateString ();
+}
+
 function add_dots (value, new_value = "") {
     /* recursively add dots to numeric value:
      * 12132143432 --> 12.132.143.432
@@ -149,3 +169,5 @@ function test () {
 }
 
 //~ test ();
+//~ let data_prova = increaseDate("29/09/2015", "44")
+//~ print ("@@@ data incrementata", data_prova);

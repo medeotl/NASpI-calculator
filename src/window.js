@@ -28,6 +28,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
                        'prevDayBtn', 'effectEntry', 'nextDayBtn',
                        'daysEntry', 'moneyEntry',
                        'btnCalcola',
+                       'lblTotalIncome','lblLastNaspiDay',
                        'revealer', 'lbl_inapp_error']
 }, class NaspiCalculatorWindow extends Gtk.ApplicationWindow {
 
@@ -86,7 +87,7 @@ var NaspiCalculatorWindow = GObject.registerClass ({
             this._prevDayBtn.set_sensitive (false);
             this._nextDayBtn.set_sensitive (false);
         }
-        print ("\n@@@ ", is_entry_value_valid);
+        //~ print ("\n@@@ ", is_entry_value_valid);
     }
 
     _checkInsertedChars (entry, new_text, length) {
@@ -576,8 +577,51 @@ var NaspiCalculatorWindow = GObject.registerClass ({
         /* make calculations */
 
         if (is_entry_value_valid == "true,true,true,true,true") {
-            // finally make calculations
-            print ("@@@ ", "mumble mumble");
+            // calculate due amount
+            let monthly_income = this._moneyEntry.get_text ();
+            monthly_income = parseFloat (monthly_income.slice (2).replace (".", "")
+                                                                 .replace (",", "."));
+            const naspi_year = this._effectEntry.get_text ().slice (6);
+            const [YY_treshold, YY_naspi_limit] = Util.year_limits.get (naspi_year);
+            if (monthly_income <= YY_treshold) {
+                monthly_income = monthly_income * 0.75;
+            } else {
+                monthly_income = (YY_treshold * 0.75) + ((monthly_income - YY_treshold) * 0.25);
+                monthly_income = (monthly_income <= YY_naspi_limit) ? monthly_income : YY_naspi_limit;
+            }
+            print ("@@@ quanto mi tocca al mese:", monthly_income);
+            let daily_income = monthly_income / 4.33 / 7;
+            print ("@@@ quanto mi tocca al giorno:", daily_income);
+            let naspi_days = this._daysEntry.get_text ();
+
+            if (naspi_days <= 90) {
+                var total_income = (daily_income * naspi_days);
+            } else {
+                // calculate montlhly 3% reduction
+                var total_income = daily_income * 90;
+                naspi_days = naspi_days - 90;
+                let daily_income_reduction = daily_income * 0.03;
+                daily_income = daily_income - daily_income_reduction;
+                while (naspi_days > 30) {
+                    total_income += daily_income * 30;
+                    daily_income = daily_income - daily_income_reduction;
+                    naspi_days = naspi_days - 30;
+                }
+                total_income = (naspi_days > 0) ?
+                    total_income + (naspi_days * daily_income) :
+                    total_income;
+            }
+            // add dots to separate the thousands and comma for italian locale
+            total_income = total_income.toFixed(2);
+            let [floor, decimal] = total_income.split(".");
+            total_income = Util.add_dots (floor) + "," + decimal;
+            print ("@@@ quanto mi tocca in tutto: ", total_income);
+            this._lblTotalIncome.set_text ("Importo spettante: € " + total_income);
+
+            // calculate last NASpI date
+            let date = this._effectEntry.get_text ();
+            let last_naspi_day = Util.increaseDate (date, naspi_days);
+            this._lblLastNaspiDay.set_text ("Ultimo giorno NASpI: " + last_naspi_day );
         } else {
             // some values is incorrect or empty
             this._reportError ("Controllare che tutti i campi siano compilati "
