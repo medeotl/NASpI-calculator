@@ -34,6 +34,7 @@ function main (argv) {
     });
 
     application.connect ('startup', app => {
+        // Css style
         let style_provider = new Gtk.CssProvider ();
         style_provider.load_from_resource (
             "/com/github/medeotl/NASpI-Calculator/application.css"
@@ -47,10 +48,20 @@ function main (argv) {
 
     application.connect ('activate', app => {
         let activeWindow = app.activeWindow;
-        
+
         if (!activeWindow) {
             activeWindow = new NaspiCalculatorWindow (app);
         }
+
+        // Shortcuts
+        let accel_group = new Gtk.AccelGroup ();
+        accel_group.connect (
+            Gdk.keyval_from_name('Q'),
+            Gdk.ModifierType.CONTROL_MASK,
+            0,
+            () => { application.quit (); }
+        );
+        activeWindow.add_accel_group (accel_group);
 
         activeWindow.present ();
     });
