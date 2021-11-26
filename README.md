@@ -1,4 +1,4 @@
 # NASpI-calculator
-Some calculation about NASpI benefits
+Some calculations about NASpI benefit
 
 <img src="data/main_window.png" align="center">
